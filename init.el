@@ -42,6 +42,8 @@
 
 (use-package diminish)
 
+(use-package general)
+
 (use-package vertico
   :straight (:files (:defaults "extensions/*"))
   :bind (:map vertico-map
@@ -66,12 +68,14 @@
   (completion-category-overrides '((file (styles partial-completion)))))
 
 (use-package consult
-  :bind (
-         ("C-c j" . #'consult-line)
-         ("C-c i" . #'consult-imenu)
-         ("C-x b" . #'consult-buffer)
-         ("C-x f" . #'consult-recent-file)
-         ("M-y" . #'consult-yank-from-kill-ring)))
+  :general
+  ("C-x b" #'consult-buffer)
+  ("C-x f" #'consult-recent-file)
+  ("M-y" #'consult-yank-from-kill-ring)
+         ;; ("C-c j" . #'consult-line)
+         ;; ("C-c i" . #'consult-imenu)
+  (:states 'normal
+   "SPC SPC" #'consult-buffer))
 
 ;; Persist history over Emacs restarts. Vertico sorts by history position.
 (use-package savehist
@@ -85,11 +89,11 @@
   (which-key-mode))
 
 (use-package flymake
-  :bind (
-         ("C-c e" . #'flymake-show-buffer-diagnostics)
-         ("C-c [" . #'flymake-goto-prev-error)
-         ("C-c ]" . #'flymake-goto-next-error)
-         )
+  :general
+  (:states 'normal
+           "SPC e" #'flymake-show-buffer-diagnostics
+           "[ d" #'flymake-goto-prev-error
+           "] d" #'flymake-goto-next-error)
   :hook ((prog-mode latex-mode) . #'flymake-mode))
 
 (use-package flymake-shellcheck
@@ -111,8 +115,6 @@
 
 (use-package eglot
   :hook ((go-mode python-mode rust-mode typescript-mode) . eglot-ensure)
-  :bind (("C-c c d" . #'xref-find-definitions)
-         ("C-c c r" . #'xref-find-references))
   :init
   (setq eglot-ignored-server-capabilities '(:documentHighlightProvider)))
 
@@ -161,7 +163,10 @@
 (use-package zig-mode
   :defer t)
 
-(use-package magit)
+(use-package magit
+  :general
+  (:states 'normal
+          "SPC g" #'magit-status))
 
 (use-package editorconfig
   :defer t)
@@ -177,19 +182,10 @@
   (setq ws-butler-keep-whitespace-before-point nil))
 
 (use-package crux
-  :bind (("C-`" . #'crux-other-window-or-switch-buffer)
-         ("C-j" . #'crux-top-join-line)
-         ("C-x K" . #'crux-kill-other-buffers)
-         ("C-c d" . #'crux-duplicate-current-line-or-region)
-         ("C-S-<backspace>" . #'crux-kill-whole-line)
-         ("C-k" . #'crux-smart-kill-line)
-         ("C-o" . #'crux-smart-open-line-above)
-         ("S-<return>" . #'crux-smart-open-line)))
-
-(use-package goto-chg
-  :bind (
-         ("C-," . #'goto-last-change-reverse)
-         ("C-." . #'goto-last-change)))
+  :general
+  ("C-x K" #'crux-kill-other-buffers)
+  (:states 'normal
+          "SPC `" #'crux-other-window-or-switch-buffer))
 
 (use-package yasnippet
   :config
@@ -239,6 +235,21 @@
   (add-hook 'imenu-after-jump-hook #'pulsar-reveal-entry)
   (pulsar-global-mode))
 
+(use-package evil
+  :init
+  ;; Play well with evil-collection, recommended on their README
+  (setq evil-want-keybinding nil)
+  :config
+  (evil-mode 1))
+
+(use-package evil-collection
+  :after evil
+  :ensure t
+  :config
+  (evil-collection-init))
+
+
+
 ;; Revert buffer
 (global-set-key (kbd "C-x C-r") #'revert-buffer-quick)
 
@@ -252,12 +263,12 @@
     ad-do-it))
 
 ;; Windows
-(global-set-key (kbd "C-c <up>") #'windmove-up)
-(global-set-key (kbd "C-c <down>") #'windmove-down)
-(global-set-key (kbd "C-c <left>") #'windmove-left)
-(global-set-key (kbd "C-c <right>") #'windmove-right)
-(global-set-key (kbd "C-0") #'delete-window)
-(global-set-key (kbd "C-1") #'delete-other-windows)
+;; (global-set-key (kbd "C-c <up>") #'windmove-up)
+;; (global-set-key (kbd "C-c <down>") #'windmove-down)
+;; (global-set-key (kbd "C-c <left>") #'windmove-left)
+;; (global-set-key (kbd "C-c <right>") #'windmove-right)
+;; (global-set-key (kbd "C-0") #'delete-window)
+;; (global-set-key (kbd "C-1") #'delete-other-windows)
 
 ;; Mouse
 (setq
