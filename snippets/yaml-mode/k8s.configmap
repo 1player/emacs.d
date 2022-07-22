@@ -1,0 +1,14 @@
+# -*- mode: snippet -*-
+# name: k8s.configmap
+# key: k8s.configmap
+# --
+
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: name
+data:
+  foo: bar
+  some.file: |
+    first line
+    second line
