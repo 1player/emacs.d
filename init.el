@@ -196,14 +196,6 @@
   (setq-default yas-indent-line 'fixed)
   (yas-global-mode 1))
 
-;; Trying out popwin for a while
-;; (use-package shackle
-;;   :config
-;;   (setq shackle-rules '((compilation-mode :noselect t)
-;;                         ("*Occur*" :select t)))
-;;   (setq shackle-default-rule nil)
-;;   (shackle-mode 1))
-
 (use-package popwin
   :init
   (popwin-mode 1))
@@ -246,21 +238,6 @@
   (add-hook 'imenu-after-jump-hook #'pulsar-recenter-top)
   (add-hook 'imenu-after-jump-hook #'pulsar-reveal-entry)
   (pulsar-global-mode))
-
-;; (use-package toolbox-tramp
-;;   :straight (toolbox-tramp :type git
-;; 			     :host github
-;; 			     :repo "fejfighter/toolbox-tramp")
-;;   :custom
-;;   (toolbox-tramp-flatpak-wrap nil)
-;;   :init
-;;   (setq toolbox-tramp-podman-label-filter '()))
-
-
-;; (use-package docker-tramp
-;;   :init
-;;   (setq docker-tramp-docker-executable "podman")
-;;   (setq docker-tramp-use-names t))
 
 ;; Revert buffer
 (global-set-key (kbd "C-x C-r") #'revert-buffer-quick)
@@ -432,18 +409,6 @@
 ;; Write customizations to a separate file instead of this file.
 (setq custom-file (expand-file-name "custom.el" user-emacs-directory))
 (load custom-file t)
-
-;; (eval-after-load 'tramp
-;;   '(progn
-;;     (add-to-list
-;;      'tramp-methods
-;;      '("host"
-;;        (tramp-login-program "flatpak-spawn")
-;;        (tramp-login-args (("--host" "/bin/sh")))
-;;        (tramp-remote-shell "/bin/sh")
-;;        (tramp-remote-shell-args ("-c"))
-;;        (tramp-remote-shell-login ("-l")))
-;;     (add-to-list 'tramp-default-host-alist '("host" nil nil)))))
 
 (defun podman-tramp-add-method ()
   (add-to-list
