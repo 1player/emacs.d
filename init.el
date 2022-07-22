@@ -27,7 +27,10 @@
 
 ;; use-package
 (straight-use-package 'use-package)
-(setq straight-use-package-by-default t)
+
+;; Configure use-package to use straight.el by default
+(use-package straight
+             :custom (straight-use-package-by-default t))
 
 ;; Packages
 (use-package sensible-defaults
@@ -68,14 +71,7 @@
   (completion-category-overrides '((file (styles partial-completion)))))
 
 (use-package consult
-  :general
-  ("C-x b" #'consult-buffer)
-  ("C-x f" #'consult-recent-file)
-  ("M-y" #'consult-yank-from-kill-ring)
-         ;; ("C-c j" . #'consult-line)
-         ;; ("C-c i" . #'consult-imenu)
-  (:states 'normal
-   "SPC SPC" #'consult-buffer))
+  :defer t)
 
 ;; Persist history over Emacs restarts. Vertico sorts by history position.
 (use-package savehist
@@ -89,11 +85,6 @@
   (which-key-mode))
 
 (use-package flymake
-  :general
-  (:states 'normal
-           "SPC e" #'flymake-show-buffer-diagnostics
-           "[ d" #'flymake-goto-prev-error
-           "] d" #'flymake-goto-next-error)
   :hook ((prog-mode latex-mode) . #'flymake-mode))
 
 (use-package flymake-shellcheck
@@ -164,9 +155,7 @@
   :defer t)
 
 (use-package magit
-  :general
-  (:states 'normal
-          "SPC g" #'magit-status))
+  :defer t)
 
 (use-package editorconfig
   :defer t)
@@ -182,10 +171,7 @@
   (setq ws-butler-keep-whitespace-before-point nil))
 
 (use-package crux
-  :general
-  ("C-x K" #'crux-kill-other-buffers)
-  (:states 'normal
-          "SPC `" #'crux-other-window-or-switch-buffer))
+  :defer t)
 
 (use-package yasnippet
   :config
@@ -202,8 +188,8 @@
   (global-undo-tree-mode 1))
 
 (use-package deadgrep
-  :bind (("<f3>" . #'deadgrep)
-         :map deadgrep-mode-map
+  :defer t
+  :bind (:map deadgrep-mode-map
          ("SPC" . #'deadgrep-visit-result-other-window)))
 
 (use-package highlight-indent-guides
@@ -212,19 +198,10 @@
   :init
   (setq highlight-indent-guides-method 'bitmap))
 
-(use-package vterm
-  :bind (("S-<f2>" . #'vterm)))
-
-(use-package vterm-toggle
-  :after vterm
-  :bind (("<f2>" . #'vterm-toggle))
-  :config
-  (define-key vterm-mode-map (kbd "<f2>") #'vterm-toggle))
-
 (use-package doom-themes)
 
 (use-package pulsar
-  :bind (("C-x l" . #'pulsar-pulse-line))
+  :defer t
   :config
   ;; integration with the `consult' package:
   (add-hook 'consult-after-jump-hook #'pulsar-recenter-top)
@@ -250,25 +227,6 @@
 
 
 
-;; Revert buffer
-(global-set-key (kbd "C-x C-r") #'revert-buffer-quick)
-
-;; Make ESC quit prompts
-(global-set-key (kbd "<escape>") 'keyboard-escape-quit)
-
-;; https://stackoverflow.com/questions/557282/in-emacs-whats-the-best-way-for-keyboard-escape-quit-not-destroy-other-windows
-(defadvice keyboard-escape-quit
-  (around keyboard-escape-quit-dont-close-windows activate)
-  (let ((buffer-quit-function (lambda () ())))
-    ad-do-it))
-
-;; Windows
-;; (global-set-key (kbd "C-c <up>") #'windmove-up)
-;; (global-set-key (kbd "C-c <down>") #'windmove-down)
-;; (global-set-key (kbd "C-c <left>") #'windmove-left)
-;; (global-set-key (kbd "C-c <right>") #'windmove-right)
-;; (global-set-key (kbd "C-0") #'delete-window)
-;; (global-set-key (kbd "C-1") #'delete-other-windows)
 
 ;; Mouse
 (setq
@@ -277,8 +235,6 @@
  ;; Scroll 3 lines at a time, full screens while holding SHIFT
  mouse-wheel-scroll-amount '(3 ((shift) . nil)))
 
-(global-set-key (kbd "<mouse-8>") #'switch-to-prev-buffer)
-(global-set-key (kbd "<mouse-9>") #'switch-to-next-buffer)
 
 ;; 21 Jun 2022: Still wonky in Emacs 29
 ;; (pixel-scroll-precision-mode 1)
@@ -319,29 +275,21 @@
   (if (display-graphic-p)
       (message "suspend-frame disabled for graphical displays.")
     (suspend-frame)))
-(global-set-key (kbd "C-z") nil)
-(global-set-key (kbd "C-x C-z") 'sph/suspend-frame)
 
 ;; Typed text replaces selection
 (delete-selection-mode 1)
 
 ;; F12 toggles menu
-(defun toggle-menu-bar ()
+(defun sph/toggle-menu-bar ()
   "Toggle menu bar."
   (interactive)
   (if menu-bar-mode
       (menu-bar-mode 0)
     (menu-bar-mode 1)))
 
-(global-set-key [f12] #'toggle-menu-bar)
-
 ;;
-(global-set-key [f5] #'recompile)
-(global-set-key [(shift f5)] #'compile)
-
-;;
-(setq recentf-max-menu-items 50)
-;;(recentf-mode 1)
+(setq recentf-max-menu-items 500)
+(recentf-mode 1)
 (save-place-mode 1)
 
 ;; Scratch
@@ -436,3 +384,64 @@
   '(progn
      (podman-tramp-add-method)
      (tramp-set-completion-function "podman" podman-tramp-completion-function-alist)))
+
+
+;;;;;;;;;;;;;;;;;
+;; Key bindings
+
+(require 'general)
+
+(general-create-definer evil-leader-def :prefix "SPC")
+
+(evil-leader-def
+ :states 'normal
+ "<left>"  #'previous-buffer
+ "<right>" #'next-buffer
+
+ "SPC"     #'consult-buffer
+ "`"       #'crux-other-window-or-switch-buffer
+
+ "b R"     #'revert-buffer-quick
+ "b K"     #'crux-kill-other-buffers
+
+ "f f"     #'find-file
+ "f r"     #'consult-recent-file
+
+ "e"       #'flymake-show-buffer-diagnostics
+
+ "g"       #'magit-status
+
+ "p p"     #'project-switch-project
+ "p f"     #'project-find-file
+ "p g"     #'deadgrep
+ "p K"     #'project-kill-buffers)
+
+(general-define-key
+ :states 'normal
+ "g ^" #'dired-jump
+ "g @" #'consult-imenu)
+
+(general-define-key
+ :states 'normal
+ "[ d" #'flymake-goto-prev-error
+ "] d" #'flymake-goto-next-error)
+
+;; TODO: replace the following with general.el
+(global-set-key (kbd "<mouse-8>") #'switch-to-prev-buffer)
+(global-set-key (kbd "<mouse-9>") #'switch-to-next-buffer)
+
+(global-set-key [f12] #'sph/toggle-menu-bar)
+
+(global-set-key [f5] #'recompile)
+(global-set-key [(shift f5)] #'compile)
+
+
+;; Make ESC quit prompts
+;; https://stackoverflow.com/questions/557282/in-emacs-whats-the-best-way-for-keyboard-escape-quit-not-destroy-other-windows
+(defadvice keyboard-escape-quit
+  (around keyboard-escape-quit-dont-close-windows activate)
+  (let ((buffer-quit-function (lambda () ())))
+    ad-do-it))
+(global-set-key (kbd "<escape>") 'keyboard-escape-quit)
+(global-set-key (kbd "C-x C-z") 'sph/suspend-frame)
+(global-set-key (kbd "C-z") nil)
