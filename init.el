@@ -51,8 +51,6 @@
   :straight (:files (:defaults "extensions/*"))
   :bind (:map vertico-map
               ("RET" . #'vertico-directory-enter)
-              ;("DEL" . vertico-directory-delete-char)
-              ;("M-DEL" . vertico-directory-delete-word)
 	          ("<prior>" . #'vertico-scroll-down)
 	          ("<next>" . #'vertico-scroll-up))
   ;; Tidy shadowed file names
@@ -71,7 +69,16 @@
   (completion-category-overrides '((file (styles partial-completion)))))
 
 (use-package consult
-  :defer t)
+  :defer t
+  :config
+  ;; Add project.el projects
+  (setq sph/consult-source-projects
+        `(:name "Projects"
+                :narrow ?P
+                :category project
+                :action ,#'project-switch-project
+                :items ,(apply #'append project--list)))
+  (add-to-list 'consult-buffer-sources sph/consult-source-projects 'append))
 
 ;; Persist history over Emacs restarts. Vertico sorts by history position.
 (use-package savehist
@@ -107,12 +114,17 @@
 (use-package eglot
   :hook ((go-mode python-mode rust-mode typescript-mode) . eglot-ensure)
   :init
+  (setq eldoc-echo-area-use-multiline-p nil)
+  (setq eldoc-idle-delay 0.1)
   (setq eglot-ignored-server-capabilities '(:documentHighlightProvider)))
 
 (use-package crystal-mode
   :defer t)
 
 (use-package elixir-mode
+  :defer t)
+
+(use-package fish-mode
   :defer t)
 
 (use-package go-mode
@@ -157,6 +169,9 @@
 (use-package magit
   :defer t)
 
+(use-package devdocs
+  :defer t)
+
 (use-package editorconfig
   :defer t)
 
@@ -174,18 +189,35 @@
   :defer t)
 
 (use-package yasnippet
+  :diminish
   :config
   (setq-default yas-indent-line 'fixed)
   (yas-global-mode 1))
 
-(use-package popwin
-  :init
-  (popwin-mode 1))
+(use-package winner
+  :straight (:type built-in)
+  :config
+  (winner-mode 1))
 
-(use-package undo-tree
+
+;; (use-package popwin
+;;   :init
+;;   (popwin-mode 1))
+
+(use-package shackle
   :init
-  (setq undo-tree-history-directory-alist '(("." . "~/.emacs.d./.cache")))
-  (global-undo-tree-mode 1))
+  (setq shackle-rules '(("\\`\\*Flymake diagnostics for.*\\'" :regexp t :select t)
+                        ("*Help*" :select t)
+                        ("*devdocs*" :select t)))
+  (shackle-mode 1))
+
+(use-package embark)
+
+;; (use-package undo-tree
+;;   :init
+;;   (setq undo-tree-enable-undo-in-region t)
+;;   (setq undo-tree-history-directory-alist '(("." . "~/.emacs.d/.cache")))
+;;   (global-undo-tree-mode 1))
 
 (use-package deadgrep
   :defer t
@@ -214,18 +246,29 @@
 
 (use-package evil
   :init
+  (setq evil-undo-system 'undo-redo)
+  (setq evil-want-C-d-scroll nil)
+  (setq evil-want-C-h-delete nil)
+  (setq evil-want-C-u-delete nil)
+  (setq evil-want-C-u-scroll nil)
+  (setq evil-want-C-w-delete nil)
+  (setq evil-want-C-w-in-emacs-state t)
   ;; Play well with evil-collection, recommended on their README
-  (setq evil-want-keybinding nil)
+  ;; (setq evil-want-keybinding nil)
   :config
+  (evil-set-initial-state 'flymake-diagnostics-buffer-mode 'emacs)
   (evil-mode 1))
 
-(use-package evil-collection
-  :after evil
-  :ensure t
-  :config
-  (evil-collection-init))
+(use-package eshell
+  :straight (:type built-in)
+  :custom
+  (eshell-scroll-to-bottom-on-input 'this))
 
-
+;; (use-package evil-collection
+;;   :after evil
+;;   :ensure t
+;;   :config
+;;   (evil-collection-init))
 
 
 ;; Mouse
@@ -268,13 +311,6 @@
   (make-directory auto-save-dir t)
   (setq auto-save-file-name-transforms `((".*" ,auto-save-dir t))))
 
-;; Disable Ctrl-Z suspend-frame
-(defun sph/suspend-frame ()
-  "In a GUI environment, do nothing; otherwise `suspend-frame'."
-  (interactive)
-  (if (display-graphic-p)
-      (message "suspend-frame disabled for graphical displays.")
-    (suspend-frame)))
 
 ;; Typed text replaces selection
 (delete-selection-mode 1)
@@ -301,8 +337,7 @@
  dired-recursive-copies t)
 
 ;; Font and theme
-(setq default-frame-alist '((font . "Noto Sans Mono Condensed-14")))
-(setq default-frame-alist '((font . "Noto Sans Mono Condensed-14")))
+(set-frame-font "PragmataPro Liga-13" nil t)
 
 (setq modus-themes-mode-line '(accented borderless))
 (setq modus-themes-syntax '(faint))
@@ -364,10 +399,11 @@
  "SettingChanged"
  #'signal-handler)
 
-
 ;; Write customizations to a separate file instead of this file.
 (setq custom-file (expand-file-name "custom.el" user-emacs-directory))
 (load custom-file t)
+
+(require 'tramp)
 
 (defun podman-tramp-add-method ()
   (add-to-list
@@ -385,27 +421,51 @@
      (podman-tramp-add-method)
      (tramp-set-completion-function "podman" podman-tramp-completion-function-alist)))
 
+(defun host-tramp-add-method ()
+  (add-to-list
+   'tramp-methods
+   '("host"
+     (tramp-login-program "host-spawn")
+     (tramp-login-args         (("sh"))
+     (tramp-remote-shell       "/bin/sh")
+     (tramp-remote-shell-args  ("-i" "-c"))))))
+
+(defconst host-tramp-completion-function-alist '((nil "")))
+
+(eval-after-load 'tramp
+  '(progn
+     (host-tramp-add-method)
+     (tramp-set-completion-function "host" host-tramp-completion-function-alist)))
 
 ;;;;;;;;;;;;;;;;;
 ;; Key bindings
+
+;; Let me bind SPC in motion state
+(define-key evil-motion-state-map " " nil)
 
 (require 'general)
 
 (general-create-definer evil-leader-def :prefix "SPC")
 
 (evil-leader-def
- :states 'normal
+ :states '(normal motion)
+
  "<left>"  #'previous-buffer
  "<right>" #'next-buffer
+
+ "."       #'embark-act
 
  "SPC"     #'consult-buffer
  "`"       #'crux-other-window-or-switch-buffer
 
+ "b k"     #'kill-this-buffer
  "b R"     #'revert-buffer-quick
  "b K"     #'crux-kill-other-buffers
 
  "f f"     #'find-file
  "f r"     #'consult-recent-file
+ "f i"     #'crux-find-user-init-file
+ "f s"     #'save-buffer
 
  "e"       #'flymake-show-buffer-diagnostics
 
@@ -414,7 +474,19 @@
  "p p"     #'project-switch-project
  "p f"     #'project-find-file
  "p g"     #'deadgrep
- "p K"     #'project-kill-buffers)
+ "p K"     #'project-kill-buffers
+
+ "q"       #'kill-this-buffer
+
+ "s"       #'save-buffer
+
+ "w c"     #'evil-window-delete
+ "w o"     #'delete-other-windows
+ "w s"     #'evil-window-split
+ "w v"     #'evil-window-vsplit)
+
+(general-define-key
+ "C-." #'embark-act)
 
 (general-define-key
  :states 'normal
@@ -423,8 +495,20 @@
 
 (general-define-key
  :states 'normal
- "[ d" #'flymake-goto-prev-error
- "] d" #'flymake-goto-next-error)
+ "[ e" #'flymake-goto-prev-error
+ "] e" #'flymake-goto-next-error)
+
+;; Shift-Tab to force completion
+(global-set-key (kbd "<backtab>") #'company-complete)
+(general-define-key
+ :states 'insert
+ "<backtab>" #'company-complete)
+
+;; Help keys
+(general-define-key
+ "C-h B" #'embark-bindings
+ "C-h D" #'devdocs-lookup)
+
 
 ;; TODO: replace the following with general.el
 (global-set-key (kbd "<mouse-8>") #'switch-to-prev-buffer)
@@ -442,6 +526,13 @@
   (around keyboard-escape-quit-dont-close-windows activate)
   (let ((buffer-quit-function (lambda () ())))
     ad-do-it))
-(global-set-key (kbd "<escape>") 'keyboard-escape-quit)
+(global-set-key (kbd "<escape>") 'minibuffer-keyboard-quit)
+
+;; Disable Ctrl-Z suspend-frame
+(defun sph/suspend-frame ()
+  "In a GUI environment, do nothing; otherwise `suspend-frame'."
+  (interactive)
+  (if (display-graphic-p)
+      (message "suspend-frame disabled for graphical displays.")
+    (suspend-frame)))
 (global-set-key (kbd "C-x C-z") 'sph/suspend-frame)
-(global-set-key (kbd "C-z") nil)
