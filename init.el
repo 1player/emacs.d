@@ -385,28 +385,6 @@
 ;; Tree sitter
 (setq treesit-extra-load-path `(,(expand-file-name "~/.local/share/tree-sitter")))
 
-;; Mouse
-(setq
- ;; Disable mouse wheel acceleration
- mouse-wheel-progressive-speed nil
- ;; Scroll 3 lines at a time, full screens while holding SHIFT
- mouse-wheel-scroll-amount '(3 ((shift) . nil)))
-
-
-;; 09 Sep 2022: Works almost perfectly, but needs to press PgUp/PgDown twice when at the
-;; top or bottom of the file.
-(pixel-scroll-precision-mode 1)
-(setq pixel-scroll-precision-interpolate-page t)
-(setq pixel-scroll-precision-use-momentum t)
-(setq pixel-scroll-precision-momentum-seconds 0.5)
-(setq pixel-scroll-precision-momentum-min-velocity 10.0)
-(setq pixel-scroll-precision-initial-velocity-factor 0.005)
-(setq pixel-scroll-precision-large-scroll-height nil)
-
-;; Try this with Emacs 29 or with pgtk, if mouse wheel is laggy
-;; See also: https://lists.gnu.org/archive/html/bug-gnu-emacs/2022-03/msg00803.html
-;; (setq mwheel-coalesce-scroll-events nil)
-
 ;; Prog mode settings
 (add-hook 'prog-mode-hook (lambda ()
                             ;; this_is-a-single_word
@@ -414,21 +392,6 @@
                             (dtrt-indent-mode 1)
                             (electric-pair-local-mode 0)))
 
-;; Scroll just enough to show the next line, like
-;; other editors do.
-(setq scroll-conservatively 101)
-
-(setq scroll-margin 5)
-(setq scroll-preserve-screen-position t)
-
-;; Don't just scroll windows, also move the cursor to the top/bottom
-;; if we reach the first/last page.
-;; Basically emulates PgUp/Down like all other editors.
-(setq scroll-error-top-bottom t)
-
-(setq-default indicate-buffer-boundaries nil)
-(setq-default indicate-empty-lines nil)
-(setq-default show-trailing-whitespace nil)
 
 ;; Use spaces, not tabs, for indentation.
 (setq-default indent-tabs-mode nil)
@@ -444,35 +407,12 @@
   (setq auto-save-file-name-transforms `((".*" ,auto-save-dir t))))
 
 
-;; Typed text replaces selection
-(delete-selection-mode 1)
-
-;; Allow motion during search
-(setq isearch-allow-motion t)
-
-;; Windows
-(setq switch-to-buffer-obey-display-actions t)
-(setq switch-to-buffer-in-dedicated-window 'pop)
 
 ;; Cache passwords for one hour
 (setq password-cache-expiry 3600)
 
 (setq compilation-scroll-output t)
 
-;; winner-mode, but with support for tabs
-(winner-mode 1)
-
-(setq tab-bar-format '(tab-bar-format-tabs tab-bar-format-add-tab))
-(setq tab-bar-show 1) ; show only when more than one tab
-(tab-bar-history-mode 1)
-
-;; F12 toggles menu
-(defun sph/toggle-menu-bar ()
-  "Toggle menu bar."
-  (interactive)
-  (if menu-bar-mode
-      (menu-bar-mode 0)
-    (menu-bar-mode 1)))
 
 ;;
 (setq recentf-max-menu-items 500)
@@ -525,100 +465,6 @@
 ;; Auto revert
 (global-auto-revert-mode 1)
 
-;; Font and theme
-
-(add-to-list 'custom-theme-load-path "~/.emacs.d/themes")
-
-
-;; (set-frame-font "IBM Plex Mono-14" nil t)
-(set-frame-font "Iosevka Comfy-14" nil t)
-
-(setq-default line-spacing nil)
-
-(setq modus-themes-mode-line '(borderless)
-      modus-themes-syntax '(alt-syntax faint)
-      modus-themes-italic-constructs t
-      modus-themes-bold-constructs nil)
-
-(defun current-meteorological-season ()
-  "Return the current meteorological season."
-  (let* ((day-in-year (lambda (date)
-                        (time-to-day-in-year (date-to-time (concat "2001-" date)))))
-         (spring-start (funcall day-in-year "03-01"))
-         (summer-start (funcall day-in-year "06-01"))
-         (autumn-start (funcall day-in-year "09-01"))
-         (winter-start (funcall day-in-year "12-01"))
-         (current-day (time-to-day-in-year (current-time))))
-    (cond ((< current-day spring-start) 'winter)
-          ((< current-day summer-start) 'spring)
-          ((< current-day autumn-start) 'summer)
-          ((< current-day winter-start) 'autumn)
-          (t 'winter))))
-
-(defun light-theme-for-this-season ()
-  "Return the light theme for this season."
-  (pcase (current-meteorological-season)
-    ('spring 'ef-spring)
-    ('summer 'ef-summer)
-    ('autumn 'ef-day)
-    ('winter 'modus-operandi)))
-
-(defvar sph/light-theme (light-theme-for-this-season))
-(defvar sph/dark-theme 'modus-vivendi)
-(defvar sph/current-theme nil)
-
-(require 'dbus)
-
-(defun sph/load-light-theme ()
-  "Load the light theme."
-  (interactive)
-  (disable-theme sph/dark-theme)
-  (load-theme sph/light-theme t)
-  (setq sph/current-theme 'light))
-
-(defun sph/load-dark-theme ()
-  "Load the dark theme."
-  (interactive)
-  (disable-theme sph/light-theme)
-  (load-theme sph/dark-theme t)
-  (setq sph/current-theme 'dark))
-
-(defun theme-switcher (value)
-  (pcase value
-    ;; No Preference. Used by GNOME to indicate light theme.
-    (0 (sph/load-light-theme))
-    ;; Prefers dark
-    (1 (sph/load-dark-theme))
-    ;; Prefers light
-    (2 (sph/load-light-theme))
-    (_ (message "Invalid key value"))))
-
-(defun handler (value)
-  (theme-switcher (car (car value))))
-
-(defun signal-handler (namespace key value)
-  (if (and
-       (string-equal namespace "org.freedesktop.appearance")
-       (string-equal key "color-scheme"))
-      (theme-switcher (car value))))
-
-(dbus-call-method-asynchronously
- :session
- "org.freedesktop.portal.Desktop"
- "/org/freedesktop/portal/desktop"
- "org.freedesktop.portal.Settings"
- "Read"
- #'handler
- "org.freedesktop.appearance"
- "color-scheme")
-
-(dbus-register-signal
- :session
- "org.freedesktop.portal.Desktop"
- "/org/freedesktop/portal/desktop"
- "org.freedesktop.portal.Settings"
- "SettingChanged"
- #'signal-handler)
 
 ;; Write customizations to a separate file instead of this file.
 (setq custom-file (expand-file-name "custom.el" user-emacs-directory))
@@ -668,8 +514,6 @@
 (global-set-key (kbd "<mouse-9>") #'switch-to-next-buffer)
 (global-set-key (kbd "<Forward>") #'switch-to-next-buffer)
 
-(global-set-key [f12] #'sph/toggle-menu-bar)
-
 (global-set-key (kbd "C-c c") #'recompile)
 (global-set-key (kbd "C-c C") #'project-compile)
 
@@ -677,8 +521,6 @@
 (global-set-key (kbd "M-<down>") #'windmove-down)
 (global-set-key (kbd "M-<left>") #'windmove-left)
 (global-set-key (kbd "M-<right>") #'windmove-right)
-
-(global-set-key (kbd "M-SPC") #'dabbrev-expand)
 
 (global-set-key (kbd "<escape>") #'minibuffer-keyboard-quit)
 
@@ -701,6 +543,14 @@
     (suspend-frame)))
 (global-set-key (kbd "C-x C-z") 'sph/suspend-frame)
 (global-set-key (kbd "C-z") 'sph/suspend-frame)
+
+;;; Modular config starts here
+(defvar sph/src-dir (expand-file-name "src" user-emacs-directory))
+(add-to-list 'load-path sph/src-dir)
+
+(require 'sph-themes)
+(require 'sph-ui)
+
 
 ;; Server
 
