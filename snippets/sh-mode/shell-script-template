@@ -1,7 +1,0 @@
-# key: sh
-# name: shell-script-template
-# --
-#!/bin/sh
-set -euo pipefail
-
-$0
