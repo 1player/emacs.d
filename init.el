@@ -1,51 +1,44 @@
-(menu-bar-mode -1)   ; Disable menu bar
-(tool-bar-mode -1)   ; Disable toolbar
-(scroll-bar-mode 1) ; Enable scrollbar
-(set-window-scroll-bars (minibuffer-window) nil nil)
-(set-fringe-mode 10) ; Give some breathing room
-(setq
- window-resize-pixelwise t
- frame-resize-pixelwise t)
+;;; init.el --- Emacs initialization.
+;;;
+;;; Commentary:
+;;; No comment.
+;;;
+;;; Code:
 
 (setq
  user-full-name "Stephane Travostino"
  user-mail-address "steph@combo.cc")
 
-;; straight.el
+;;; Packaging boilerplate
 (defvar bootstrap-version)
 (let ((bootstrap-file
        (expand-file-name "straight/repos/straight.el/bootstrap.el" user-emacs-directory))
-      (bootstrap-version 5))
+      (bootstrap-version 6))
   (unless (file-exists-p bootstrap-file)
     (with-current-buffer
         (url-retrieve-synchronously
-         "https://raw.githubusercontent.com/raxod502/straight.el/develop/install.el"
+         "https://raw.githubusercontent.com/radian-software/straight.el/develop/install.el"
          'silent 'inhibit-cookies)
       (goto-char (point-max))
       (eval-print-last-sexp)))
   (load bootstrap-file nil 'nomessage))
 
-;; use-package
+(require 'straight)
+(setq straight-use-package-by-default t)
 (straight-use-package 'use-package)
 
-;; Configure use-package to use straight.el by default
-(use-package straight
-             :custom (straight-use-package-by-default t))
-
 ;; Packages
+
+;; TODO: there is no reason why we can't use the upstream package instead of our fork
+;; and just load the settings and keybinds we want to use
 (use-package sensible-defaults
-  :straight (sensible-defaults :type git
-			               :host github
-			               :repo "hrs/sensible-defaults.el"
-                           :fork (:host github
-                                        :repo "1player/sensible-defaults.el"))
+  :straight (sensible-defaults :type git :host github
+                               :repo "1player/sensible-defaults.el")
   :config
   (sensible-defaults/use-all-settings)
   (sensible-defaults/use-all-keybindings))
 
 (use-package diminish)
-
-(use-package general)
 
 (use-package vertico
   :straight (:files (:defaults "extensions/*"))
@@ -66,19 +59,11 @@
   :custom
   (completion-styles '(orderless basic))
   (completion-category-defaults nil)
-  (completion-category-overrides '((file (styles partial-completion)))))
+  (completion-category-overrides '((file (styles basic partial-completion)))))
 
 (use-package consult
   :defer t
-  :config
-  ;; Add project.el projects
-  (setq sph/consult-source-projects
-        `(:name "Projects"
-                :narrow ?P
-                :category project
-                :action ,#'project-switch-project
-                :items ,(apply #'append project--list)))
-  (add-to-list 'consult-buffer-sources sph/consult-source-projects 'append))
+  :bind (("C-x b" . #'consult-buffer)))
 
 ;; Persist history over Emacs restarts. Vertico sorts by history position.
 (use-package savehist
@@ -92,49 +77,72 @@
   (which-key-mode))
 
 (use-package flymake
-  :hook ((prog-mode latex-mode) . #'flymake-mode))
+  :hook ((prog-mode latex-mode) . #'flymake-mode)
+  :bind (("M-p" . #'flymake-goto-prev-error)
+         ("M-n" . #'flymake-goto-next-error)
+         ("C-c d" . #'flymake-show-buffer-diagnostics)
+         ("C-x p d" . #'flymake-show-project-diagnostics)))
 
 (use-package flymake-shellcheck
   :commands flymake-shellcheck-load
   :init
-  ;; (add-hook 'sh-mode-hook (lambda ()
-  ;;                           (unless (eq sh-shell 'rpm)
-  ;;                             (flymake-shellcheck-load))))
   (add-hook 'sh-mode-hook #'flymake-shellcheck-load))
 
-(use-package company
-  :diminish company-mode
-  :hook (prog-mode . company-mode)
-  :bind (:map company-active-map
-              ("<tab>" . #'company-complete-selection)
-              ("<escape>" . #'company-abort)
-              ("<return>" . nil)
-              ("RET" . nil)))
+(use-package corfu
+  :init
+  (setq tab-always-indent 'complete)
+  (global-corfu-mode))
 
 (use-package eglot
-  :hook ((go-mode python-mode rust-mode typescript-mode) . eglot-ensure)
+  :diminish
+  :hook ((go-mode python-mode rust-mode typescript-mode elixir-mode elixir-ts-mode heex-ts-mode) . eglot-ensure)
   :init
   (setq eldoc-echo-area-use-multiline-p nil)
   (setq eldoc-idle-delay 0.1)
-  (setq eglot-ignored-server-capabilities '(:documentHighlightProvider)))
+  (setq eglot-ignored-server-capabilities '(:documentHighlightProvider))
+  (add-hook 'eglot-managed-mode-hook
+            (lambda ()
+              (put 'eglot-note 'flymake-overlay-control nil)
+              (put 'eglot-warning 'flymake-overlay-control nil)
+              (put 'eglot-error 'flymake-overlay-control nil)
+
+              ;; Show flymake diagnostics first.
+              (setq eldoc-documentation-functions
+                    (cons #'flymake-eldoc-function
+                          (remove #'flymake-eldoc-function eldoc-documentation-functions)))))
+  (setq eldoc-documentation-strategy 'eldoc-documentation-compose)
+  (setq eldoc-echo-area-prefer-doc-buffer t)
+  (defun eglot-format-buffer-on-save ()
+    (add-hook 'before-save-hook #'eglot-format-buffer -10 t))
+  :config
+  (dolist (mode '(elixir-mode elixir-ts-mode heex-ts-mode))
+    (add-to-list 'eglot-server-programs `(,mode . ("elixir-ls")))))
+
+(use-package clojure-mode
+  :defer t)
 
 (use-package crystal-mode
   :defer t)
 
-(use-package elixir-mode
-  :defer t)
+(use-package elixir-ts-mode
+  :defer t
+  :config
+  (add-hook 'elixir-ts-mode-hook #'eglot-format-buffer-on-save))
 
 (use-package fish-mode
   :defer t)
 
 (use-package go-mode
-  :defer t
+  :defer
   :config
   (defun sph/go-mode-hook ()
     (set (make-local-variable 'compile-command)
          "go run ./...")
     (add-hook 'before-save-hook 'eglot-format-buffer -10 t))
   (add-hook 'go-mode-hook 'sph/go-mode-hook))
+
+(use-package janet-mode
+  :defer t)
 
 (use-package json-mode
   :defer t)
@@ -149,6 +157,13 @@
   :defer t)
 
 (use-package rust-mode
+  :defer t
+  :config
+  (setq rust-format-on-save t)
+  ;; Don't show error buffer when trying to format invalid code
+  (setq rust-format-show-buffer nil))
+
+(use-package php-mode
   :defer t)
 
 (use-package typescript-mode
@@ -160,69 +175,82 @@
   (add-to-list 'auto-mode-alist '("\\.bu\\'" . yaml-mode)))
 
 (use-package web-mode
-  :defer t
-  :mode ("\\.html?\\'" . web-mode))
+  :mode (("\\.html?\\'" . web-mode)
+         ("\\.html?.l?eex\\'" . web-mode)
+         ("\\.html?.php\\'" . web-mode)))
+;; :init
+;; (define-derived-mode heex-mode web-mode "HEEx"
+;;   "Major mode for editing HEEx files")
+;; (add-to-list 'auto-mode-alist '("\\.heex\\'" . heex-mode)))
 
 (use-package zig-mode
   :defer t)
 
-(use-package magit
-  :defer t)
+(use-package slime
+  :config
+  (setq inferior-lisp-program "sbcl"))
 
-(use-package devdocs
+(use-package cider)
+
+(use-package magit
   :defer t)
 
 (use-package editorconfig
   :defer t)
+
+(use-package direnv
+  :config
+  (direnv-mode))
 
 (use-package dtrt-indent
   :diminish
   :defer t)
 
 (use-package ws-butler
-  :diminish
+  :diminish ws-butler-mode
   :hook ((prog-mode markdown-mode text-mode) . ws-butler-mode)
   :init
   (setq ws-butler-keep-whitespace-before-point nil))
 
 (use-package crux
-  :defer t)
+  :bind (("C-a" . #'crux-move-beginning-of-line)
+         ("<home>" . #'crux-move-beginning-of-line)
+         ("C-o" . #'crux-smart-open-line)
+         ("M-o" . #'crux-smart-open-line-above)
+                                        ;("C-k" . #'crux-smart-kill-line)
+         ("C-c i" . #'crux-find-user-init-file)
+         ("C-x K" . #'crux-kill-other-buffers)
+         ("C-c w s" . #'crux-swap-windows)
+         ("C-c r" . #'crux-rename-buffer-and-file)))
 
-(use-package yasnippet
-  :diminish
+(use-package avy
+  :bind (("M-j" . #'avy-goto-char))
+  :custom (avy-keys '(?a ?r ?s ?t ?g ?m ?n ?e ?i ?o)))
+
+(use-package expand-region
+  :bind (("C--" . #'er/expand-region)
+         ("C-=" . #'er/contract-region)))
+
+(use-package tempel)
+
+(use-package window-numbering
   :config
-  (setq-default yas-indent-line 'fixed)
-  (yas-global-mode 1))
+  (window-numbering-mode))
 
-(use-package winner
-  :straight (:type built-in)
-  :config
-  (winner-mode 1))
+(use-package embark
+  :bind (("C-." . #'embark-act)
+         ("C-h B" . #'embark-bindings)))
 
-
-;; (use-package popwin
-;;   :init
-;;   (popwin-mode 1))
-
-(use-package shackle
-  :init
-  (setq shackle-rules '(("\\`\\*Flymake diagnostics for.*\\'" :regexp t :select t)
-                        ("*Help*" :select t)
-                        ("*devdocs*" :select t)))
-  (shackle-mode 1))
-
-(use-package embark)
-
-;; (use-package undo-tree
-;;   :init
-;;   (setq undo-tree-enable-undo-in-region t)
-;;   (setq undo-tree-history-directory-alist '(("." . "~/.emacs.d/.cache")))
-;;   (global-undo-tree-mode 1))
+(use-package helpful
+  :bind (("C-h f" . #'helpful-callable)
+         ("C-h v" . #'helpful-variable)
+         ("C-h k" . #'helpful-key)
+         ("C-h x" . #'helpful-command)))
 
 (use-package deadgrep
   :defer t
   :bind (:map deadgrep-mode-map
-         ("SPC" . #'deadgrep-visit-result-other-window)))
+              ("SPC" . #'deadgrep-visit-result-other-window)))
 
 (use-package highlight-indent-guides
   :diminish
@@ -230,10 +258,12 @@
   :init
   (setq highlight-indent-guides-method 'bitmap))
 
-(use-package doom-themes)
+(use-package whole-line-or-region
+  :bind (("M-," . #'whole-line-or-region-comment-dwim-2))
+  :config
+  (whole-line-or-region-global-mode 1))
 
 (use-package pulsar
-  :defer t
   :config
   ;; integration with the `consult' package:
   (add-hook 'consult-after-jump-hook #'pulsar-recenter-top)
@@ -244,46 +274,139 @@
   (add-hook 'imenu-after-jump-hook #'pulsar-reveal-entry)
   (pulsar-global-mode))
 
-(use-package evil
-  :init
-  (setq evil-undo-system 'undo-redo)
-  (setq evil-want-C-d-scroll nil)
-  (setq evil-want-C-h-delete nil)
-  (setq evil-want-C-u-delete nil)
-  (setq evil-want-C-u-scroll nil)
-  (setq evil-want-C-w-delete nil)
-  (setq evil-want-C-w-in-emacs-state t)
-  ;; Play well with evil-collection, recommended on their README
-  ;; (setq evil-want-keybinding nil)
+(use-package geiser-chicken)
+
+(use-package format-all)
+
+(use-package nano-modeline
   :config
-  (evil-set-initial-state 'flymake-diagnostics-buffer-mode 'emacs)
-  (evil-mode 1))
+  (nano-modeline-mode))
 
-(use-package eshell
-  :straight (:type built-in)
-  :custom
-  (eshell-scroll-to-bottom-on-input 'this))
+(use-package ef-themes)
 
-;; (use-package evil-collection
-;;   :after evil
-;;   :ensure t
+(use-package paredit)
+
+;; (use-package meow
 ;;   :config
-;;   (evil-collection-init))
+;;   (setq meow-cheatsheet-layout meow-cheatsheet-layout-colemak-dh)
+;;   (meow-motion-overwrite-define-key
+;;    ;; Use e to move up, n to move down.
+;;    ;; Since special modes usually use n to move down, we only overwrite e here.
+;;    '("e" . meow-prev)
+;;    '("<escape>" . ignore))
+;;   (meow-leader-define-key
+;;    '("?" . meow-cheatsheet)
+;;    ;; To execute the originally e in MOTION state, use SPC e.
+;;    '("e" . "H-e")
+;;    '("1" . meow-digit-argument)
+;;    '("2" . meow-digit-argument)
+;;    '("3" . meow-digit-argument)
+;;    '("4" . meow-digit-argument)
+;;    '("5" . meow-digit-argument)
+;;    '("6" . meow-digit-argument)
+;;    '("7" . meow-digit-argument)
+;;    '("8" . meow-digit-argument)
+;;    '("9" . meow-digit-argument)
+;;    '("0" . meow-digit-argument))
+;;   (meow-normal-define-key
+;;    '("0" . meow-expand-0)
+;;    '("1" . meow-expand-1)
+;;    '("2" . meow-expand-2)
+;;    '("3" . meow-expand-3)
+;;    '("4" . meow-expand-4)
+;;    '("5" . meow-expand-5)
+;;    '("6" . meow-expand-6)
+;;    '("7" . meow-expand-7)
+;;    '("8" . meow-expand-8)
+;;    '("9" . meow-expand-9)
+;;    '("-" . negative-argument)
+;;    '("'" . meow-reverse)
+;;    '("," . meow-inner-of-thing)
+;;    '("." . meow-bounds-of-thing)
+;;    '("(" . meow-beginning-of-thing)
+;;    '(")" . meow-end-of-thing)
+;;    '("/" . meow-visit)
+;;    '("a" . meow-append)
+;;    '("A" . meow-open-below)
+;;    '("d" . meow-back-word)
+;;    '("D" . meow-back-symbol)
+;;    '("c" . meow-change)
+;;    '("g" . meow-delete)
+;;    '("i" . meow-prev)
+;;    '("I" . meow-prev-expand)
+;;    '("f" . meow-find)
+;;    '("b" . meow-cancel-selection)
+;;    '("B" . meow-grab)
+;;    '("n" . meow-left)
+;;    '("N" . meow-left-expand)
+;;    '("o" . meow-right)
+;;    '("O" . meow-right-expand)
+;;    '("j" . meow-join)
+;;    '("k" . meow-kill)
+;;    '("l" . meow-line)
+;;    '("L" . meow-goto-line)
+;;    '("h" . meow-mark-word)
+;;    '("H" . meow-mark-symbol)
+;;    '("e" . meow-next)
+;;    '("E" . meow-next-expand)
+;;    '("m" . meow-block)
+;;    '("M" . meow-to-block)
+;;    '("p" . meow-yank)
+;;    '("q" . meow-quit)
+;;    '("r" . meow-replace)
+;;    '("s" . meow-insert)
+;;    '("S" . meow-open-above)
+;;    '("t" . meow-till)
+;;    '("u" . meow-undo)
+;;    '("U" . meow-undo-in-selection)
+;;    '("v" . meow-search)
+;;    '("w" . meow-next-word)
+;;    '("W" . meow-next-symbol)
+;;    '("x" . meow-delete)
+;;    '("X" . meow-backward-delete)
+;;    '("y" . meow-save)
+;;    '("z" . meow-pop-selection)
+;;    '("=" . repeat)
+;;    '("<escape>" . ignore)))
 
+
+
+(use-package olivetti
+  :defer t)
+
+(use-package eat
+  :straight (eat :type git
+       :host codeberg
+       :repo "akib/emacs-eat"
+       :files ("*.el" ("term" "term/*.el") "*.texi"
+               "*.ti" ("terminfo/e" "terminfo/e/*")
+               ("terminfo/65" "terminfo/65/*")
+               ("integration" "integration/*")
+               (:exclude ".dir-locals.el" "*-tests.el")))
+  :bind (("C-x p t" . #'eat-project)
+         ("C-c t" . #'eat)))
+
+
+;; Tree sitter
+(setq treesit-extra-load-path `(,(expand-file-name "~/.local/share/tree-sitter")))
 
 ;; Mouse
 (setq
- ;; Disable mouse acceleration
+ ;; Disable mouse wheel acceleration
  mouse-wheel-progressive-speed nil
  ;; Scroll 3 lines at a time, full screens while holding SHIFT
  mouse-wheel-scroll-amount '(3 ((shift) . nil)))
 
 
-;; 21 Jun 2022: Still wonky in Emacs 29
-;; (pixel-scroll-precision-mode 1)
-;; (setq pixel-scroll-precision-interpolate-page nil)
-;; (setq pixel-scroll-precision-large-scroll-height 10.0)
-;; (setq pixel-scroll-precision-interpolation-factor 6.0)
+;; 09 Sep 2022: Works almost perfectly, but needs to press PgUp/PgDown twice when at the
+;; top or bottom of the file.
+(pixel-scroll-precision-mode 1)
+(setq pixel-scroll-precision-interpolate-page t)
+(setq pixel-scroll-precision-use-momentum t)
+(setq pixel-scroll-precision-momentum-seconds 0.5)
+(setq pixel-scroll-precision-momentum-min-velocity 10.0)
+(setq pixel-scroll-precision-initial-velocity-factor 0.005)
+(setq pixel-scroll-precision-large-scroll-height nil)
 
 ;; Try this with Emacs 29 or with pgtk, if mouse wheel is laggy
 ;; See also: https://lists.gnu.org/archive/html/bug-gnu-emacs/2022-03/msg00803.html
@@ -291,12 +414,26 @@
 
 ;; Prog mode settings
 (add-hook 'prog-mode-hook (lambda ()
-                            (setq-local show-trailing-whitespace nil
-                                        indicate-empty-lines t)
-                            ;;(hl-line-mode 1)
-                            (dtrt-indent-mode 1)))
+                            ;; this_is-a-single_word
+                            (superword-mode 1)
+                            (dtrt-indent-mode 1)
+                            (electric-pair-local-mode 0)))
 
-(setq-default indicate-buffer-boundaries 'left)
+;; Scroll just enough to show the next line, like
+;; other editors do.
+(setq scroll-conservatively 101)
+
+(setq scroll-margin 5)
+(setq scroll-preserve-screen-position t)
+
+;; Don't just scroll windows, also move the cursor to the top/bottom
+;; if we reach the first/last page.
+;; Basically emulates PgUp/Down like all other editors.
+(setq scroll-error-top-bottom t)
+
+(setq-default indicate-buffer-boundaries nil)
+(setq-default indicate-empty-lines nil)
+(setq-default show-trailing-whitespace nil)
 
 ;; Use spaces, not tabs, for indentation.
 (setq-default indent-tabs-mode nil)
@@ -315,6 +452,25 @@
 ;; Typed text replaces selection
 (delete-selection-mode 1)
 
+;; Allow motion during search
+(setq isearch-allow-motion t)
+
+;; Windows
+(setq switch-to-buffer-obey-display-actions t)
+(setq switch-to-buffer-in-dedicated-window 'pop)
+
+;; Cache passwords for one hour
+(setq password-cache-expiry 3600)
+
+(setq compilation-scroll-output t)
+
+;; winner-mode, but with support for tabs
+(winner-mode 1)
+
+(setq tab-bar-format '(tab-bar-format-tabs tab-bar-format-add-tab))
+(setq tab-bar-show 1) ; show only when more than one tab
+(tab-bar-history-mode 1)
+
 ;; F12 toggles menu
 (defun sph/toggle-menu-bar ()
   "Toggle menu bar."
@@ -328,21 +484,91 @@
 (recentf-mode 1)
 (save-place-mode 1)
 
-;; Scratch
-(setq initial-major-mode #'fundamental-mode)
-
 ;; Dired
+(require 'dired)
+
 (setq
  delete-by-moving-to-trash t
- dired-recursive-copies t)
+ dired-recursive-copies t
+ dired-do-revert-buffer t
+ dired-listing-switches "-alh --group-directories-first")
+
+(setq dired-omit-files
+      (rx (or (seq bol "."))))
+
+(add-hook 'dired-mode-hook #'dired-omit-mode)
+
+;; Auto refresh on change
+(add-hook 'dired-mode-hook #'auto-revert-mode)
+
+(define-key dired-mode-map (kbd "C-c C-o") #'dired-omit-mode)
+(define-key dired-mode-map (kbd "DEL") #'dired-up-directory)
+(define-key dired-mode-map (kbd "SPC") #'dired-find-file)
+
+(require 'dired-x)
+
+;; Compile accepts ANSI colors
+(require 'ansi-color)
+(defun colorize-compilation-buffer ()
+  (ansi-color-apply-on-region compilation-filter-start (point)))
+(add-hook 'compilation-filter-hook 'colorize-compilation-buffer)
+
+;; Completions
+;; 12 Oct 2022 - Disable for now
+;; (setq completions-format 'one-column)
+;; (setq completions-header-format nil)
+;; (setq completions-max-height 20)
+;; (setq completion-auto-select nil)
+
+;; (define-key minibuffer-mode-map (kbd "C-n") 'minibuffer-next-completion)
+;; (define-key minibuffer-mode-map (kbd "C-p") 'minibuffer-previous-completion)
+
+;; (define-key completion-in-region-mode-map (kbd "C-n") 'minibuffer-next-completion)
+;; (define-key completion-in-region-mode-map (kbd "C-p") 'minibuffer-previous-completion)
+
+
+;; Auto revert
+(global-auto-revert-mode 1)
 
 ;; Font and theme
-(set-frame-font "PragmataPro Liga-13" nil t)
 
-(setq modus-themes-mode-line '(accented borderless))
-(setq modus-themes-syntax '(faint))
+(add-to-list 'custom-theme-load-path "~/.emacs.d/themes")
 
-(defvar sph/light-theme 'modus-operandi)
+
+;; (set-frame-font "IBM Plex Mono-14" nil t)
+(set-frame-font "Iosevka Comfy-14" nil t)
+
+(setq-default line-spacing nil)
+
+(setq modus-themes-mode-line '(borderless)
+      modus-themes-syntax '(alt-syntax faint)
+      modus-themes-italic-constructs t
+      modus-themes-bold-constructs nil)
+
+(defun current-meteorological-season ()
+  "Return the current meteorological season."
+  (let* ((day-in-year (lambda (date)
+                        (time-to-day-in-year (date-to-time (concat "2001-" date)))))
+         (spring-start (funcall day-in-year "03-01"))
+         (summer-start (funcall day-in-year "06-01"))
+         (autumn-start (funcall day-in-year "09-01"))
+         (winter-start (funcall day-in-year "12-01"))
+         (current-day (time-to-day-in-year (current-time))))
+    (cond ((< current-day spring-start) 'winter)
+          ((< current-day summer-start) 'spring)
+          ((< current-day autumn-start) 'summer)
+          ((< current-day winter-start) 'autumn)
+          (t 'winter))))
+
+(defun light-theme-for-this-season ()
+  "Return the light theme for this season."
+  (pcase (current-meteorological-season)
+    ('spring 'ef-spring)
+    ('summer 'ef-summer)
+    ('autumn 'ef-day)
+    ('winter 'modus-operandi)))
+
+(defvar sph/light-theme (light-theme-for-this-season))
 (defvar sph/dark-theme 'modus-vivendi)
 (defvar sph/current-theme nil)
 
@@ -427,8 +653,8 @@
    '("host"
      (tramp-login-program "host-spawn")
      (tramp-login-args         (("sh"))
-     (tramp-remote-shell       "/bin/sh")
-     (tramp-remote-shell-args  ("-i" "-c"))))))
+                               (tramp-remote-shell       "/bin/sh")
+                               (tramp-remote-shell-args  ("-i" "-c"))))))
 
 (defconst host-tramp-completion-function-alist '((nil "")))
 
@@ -437,96 +663,39 @@
      (host-tramp-add-method)
      (tramp-set-completion-function "host" host-tramp-completion-function-alist)))
 
-;;;;;;;;;;;;;;;;;
-;; Key bindings
+(global-set-key (kbd "M-g M-,") #'beginning-of-buffer)
+(global-set-key (kbd "M-g M-.") #'end-of-buffer)
 
-;; Let me bind SPC in motion state
-(define-key evil-motion-state-map " " nil)
+(global-set-key (kbd "C-x C-r") #'revert-buffer-quick)
 
-(require 'general)
-
-(general-create-definer evil-leader-def :prefix "SPC")
-
-(evil-leader-def
- :states '(normal motion)
-
- "<left>"  #'previous-buffer
- "<right>" #'next-buffer
-
- "."       #'embark-act
-
- "SPC"     #'consult-buffer
- "`"       #'crux-other-window-or-switch-buffer
-
- "b k"     #'kill-this-buffer
- "b R"     #'revert-buffer-quick
- "b K"     #'crux-kill-other-buffers
-
- "f f"     #'find-file
- "f r"     #'consult-recent-file
- "f i"     #'crux-find-user-init-file
- "f s"     #'save-buffer
-
- "e"       #'flymake-show-buffer-diagnostics
-
- "g"       #'magit-status
-
- "p p"     #'project-switch-project
- "p f"     #'project-find-file
- "p g"     #'deadgrep
- "p K"     #'project-kill-buffers
-
- "q"       #'kill-this-buffer
-
- "s"       #'save-buffer
-
- "w c"     #'evil-window-delete
- "w o"     #'delete-other-windows
- "w s"     #'evil-window-split
- "w v"     #'evil-window-vsplit)
-
-(general-define-key
- "C-." #'embark-act)
-
-(general-define-key
- :states 'normal
- "g ^" #'dired-jump
- "g @" #'consult-imenu)
-
-(general-define-key
- :states 'normal
- "[ e" #'flymake-goto-prev-error
- "] e" #'flymake-goto-next-error)
-
-;; Shift-Tab to force completion
-(global-set-key (kbd "<backtab>") #'company-complete)
-(general-define-key
- :states 'insert
- "<backtab>" #'company-complete)
-
-;; Help keys
-(general-define-key
- "C-h B" #'embark-bindings
- "C-h D" #'devdocs-lookup)
-
-
-;; TODO: replace the following with general.el
 (global-set-key (kbd "<mouse-8>") #'switch-to-prev-buffer)
+(global-set-key (kbd "<Back>") #'switch-to-prev-buffer)
 (global-set-key (kbd "<mouse-9>") #'switch-to-next-buffer)
+(global-set-key (kbd "<Forward>") #'switch-to-next-buffer)
 
 (global-set-key [f12] #'sph/toggle-menu-bar)
 
-(global-set-key [f5] #'recompile)
-(global-set-key [(shift f5)] #'compile)
+(global-set-key (kbd "C-c c") #'recompile)
+(global-set-key (kbd "C-c C") #'project-compile)
 
+(global-set-key (kbd "M-<up>") #'windmove-up)
+(global-set-key (kbd "M-<down>") #'windmove-down)
+(global-set-key (kbd "M-<left>") #'windmove-left)
+(global-set-key (kbd "M-<right>") #'windmove-right)
+
+(global-set-key (kbd "M-SPC") #'dabbrev-expand)
+
+(global-set-key (kbd "<escape>") #'minibuffer-keyboard-quit)
+
+(global-set-key (kbd "C-`") #'undo)
 
 ;; Make ESC quit prompts
 ;; https://stackoverflow.com/questions/557282/in-emacs-whats-the-best-way-for-keyboard-escape-quit-not-destroy-other-windows
-(defadvice keyboard-escape-quit
-  (around keyboard-escape-quit-dont-close-windows activate)
-  (let ((buffer-quit-function (lambda () ())))
-    ad-do-it))
-(global-set-key (kbd "<escape>") 'minibuffer-keyboard-quit)
+;; (defadvice keyboard-escape-quit
+;;   (around keyboard-escape-quit-dont-close-windows activate)
+;;   (let ((buffer-quit-function (lambda () ())))
+;;     ad-do-it))
+;; (global-set-key (kbd "<escape>") 'minibuffer-keyboard-quit)
 
 ;; Disable Ctrl-Z suspend-frame
 (defun sph/suspend-frame ()
@@ -536,3 +705,14 @@
       (message "suspend-frame disabled for graphical displays.")
     (suspend-frame)))
 (global-set-key (kbd "C-x C-z") 'sph/suspend-frame)
+(global-set-key (kbd "C-z") 'sph/suspend-frame)
+
+;; Server
+
+(require 'server)
+
+(unless (server-running-p)
+  (server-start))
+
+(provide 'init)
+;;; init.el ends here

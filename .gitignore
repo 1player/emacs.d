@@ -1,7 +1,9 @@
-.cache
+.cache/
+.cask/
 auto-save-list
 autosaves
 backups
+bookmarks
 devdocs
 eln-cache
 history
@@ -9,4 +11,5 @@ places
 projects
 recentf
 straight
+tramp
 transient

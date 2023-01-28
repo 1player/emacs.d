@@ -1,0 +1,3 @@
+elixir-ts-mode
+
+(defm "defmodule " p " do" n q n "end")
