@@ -11,9 +11,10 @@
  '(ignored-local-variable-values '((flycheck-disabled-checkers emacs-lisp-checkdoc)))
  '(nano-modeline-mode t)
  '(nano-modeline-position 'top)
+ '(native-comp-async-report-warnings-errors 'silent)
  '(org-agenda-files '("~/Documents/Org/My iPhone stuff.org"))
  '(package-selected-packages
-   '(eat centered-window centered-window-mode olivetti paredit dired-sidebar all-the-icons treemacs ef-themes el-themes corfu perspective persp-mode sideline-flymake tide vterm evil-leader undo-tree doom-modeline counsel editorconfig zeno-theme which-key use-package selectrum-prescient magit lsp-mode ivy go-mode evil diminish)))
+   '(embark-consult eat centered-window centered-window-mode olivetti paredit dired-sidebar all-the-icons treemacs ef-themes el-themes corfu perspective persp-mode sideline-flymake tide vterm evil-leader undo-tree doom-modeline counsel editorconfig zeno-theme which-key use-package selectrum-prescient magit lsp-mode ivy go-mode evil diminish)))
 (custom-set-faces
  ;; custom-set-faces was added by Custom.
  ;; If you edit it by hand, you could mess it up, so be careful.

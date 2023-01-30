@@ -120,9 +120,6 @@
   (dolist (mode '(elixir-mode elixir-ts-mode heex-ts-mode))
     (add-to-list 'eglot-server-programs `(,mode . ("elixir-ls")))))
 
-(use-package clojure-mode
-  :defer t)
-
 (use-package crystal-mode
   :defer t)
 
@@ -188,12 +185,6 @@
 (use-package zig-mode
   :defer t)
 
-(use-package slime
-  :config
-  (setq inferior-lisp-program "sbcl"))
-
-(use-package cider)
-
 (use-package magit
   :defer t)
 
@@ -243,6 +234,8 @@
   :bind (("C-." . #'embark-act)
          ("C-h B" . #'embark-bindings)))
 
+(use-package embark-consult)
+
 (use-package helpful
   :bind (("C-h f" . #'helpful-callable)
          ("C-h v" . #'helpful-variable)
@@ -285,8 +278,6 @@
   (nano-modeline-mode))
 
 (use-package ef-themes)
-
-(use-package paredit)
 
 ;; (use-package meow
 ;;   :config
@@ -545,11 +536,14 @@
 (global-set-key (kbd "C-z") 'sph/suspend-frame)
 
 ;;; Modular config starts here
+
 (defvar sph/src-dir (expand-file-name "src" user-emacs-directory))
 (add-to-list 'load-path sph/src-dir)
 
 (require 'sph-themes)
 (require 'sph-ui)
+
+(require 'sph-lang-lisp)
 
 
 ;; Server
