@@ -5,6 +5,24 @@
 (set-frame-font "Iosevka Comfy-14" nil t)
 (setq-default line-spacing nil)
 
+;; Theme customization
+
+(with-eval-after-load 'modus-themes
+  (setq modus-themes-italic-constructs t
+        modus-themes-bold-constructs nil)
+
+  (setq modus-themes-common-palette-overrides
+        `(;; Remove the border from the modeline
+          (border-mode-line-active unspecified)
+          (border-mode-line-inactive unspecified)
+          ;; Make the mode line more colorful
+          (bg-mode-line-active bg-magenta-subtle)
+          (fg-mode-line-active fg-main)
+          ,@modus-themes-preset-overrides-faint)))
+
+;;
+
+
 (defun current-meteorological-season ()
   "Return the current meteorological season."
   (let* ((day-in-year (lambda (date)
@@ -31,6 +49,8 @@
 (defvar sph/light-theme (light-theme-for-this-season))
 (defvar sph/dark-theme 'modus-vivendi)
 (defvar sph/current-theme nil)
+
+
 
 (defun sph/load-light-theme ()
   "Load the light theme."
@@ -86,12 +106,5 @@
  #'signal-handler)
 
 
-;; Theme customization
-
-(with-eval-after-load 'modus-themes
-  (setq modus-themes-mode-line '(borderless)
-        modus-themes-syntax '(alt-syntax faint)
-        modus-themes-italic-constructs t
-        modus-themes-bold-constructs nil))
 
 (provide 'sph-themes)
