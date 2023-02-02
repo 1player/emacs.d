@@ -14,7 +14,8 @@
   :config
    (setq sly-lisp-implementations
          '((sbcl ("sbcl" "--noinform") :coding-system utf-8-unix)))
-   (setq sly-default-lisp 'sbcl))
+   (setq sly-default-lisp 'sbcl)
+   (setq inferior-lisp-program "sbcl"))
 
 
 (provide 'sph-lang-lisp)

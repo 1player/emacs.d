@@ -273,10 +273,6 @@
 
 (use-package format-all)
 
-(use-package nano-modeline
-  :config
-  (nano-modeline-mode))
-
 (use-package ef-themes)
 
 ;; (use-package meow
@@ -495,55 +491,20 @@
      (host-tramp-add-method)
      (tramp-set-completion-function "host" host-tramp-completion-function-alist)))
 
-(global-set-key (kbd "M-g M-,") #'beginning-of-buffer)
-(global-set-key (kbd "M-g M-.") #'end-of-buffer)
-
-(global-set-key (kbd "C-x C-r") #'revert-buffer-quick)
-
-(global-set-key (kbd "<mouse-8>") #'switch-to-prev-buffer)
-(global-set-key (kbd "<Back>") #'switch-to-prev-buffer)
-(global-set-key (kbd "<mouse-9>") #'switch-to-next-buffer)
-(global-set-key (kbd "<Forward>") #'switch-to-next-buffer)
-
-(global-set-key (kbd "C-c c") #'recompile)
-(global-set-key (kbd "C-c C") #'project-compile)
-
-(global-set-key (kbd "M-<up>") #'windmove-up)
-(global-set-key (kbd "M-<down>") #'windmove-down)
-(global-set-key (kbd "M-<left>") #'windmove-left)
-(global-set-key (kbd "M-<right>") #'windmove-right)
-
-(global-set-key (kbd "<escape>") #'minibuffer-keyboard-quit)
-
-(global-set-key (kbd "C-`") #'undo)
-
-;; Make ESC quit prompts
-;; https://stackoverflow.com/questions/557282/in-emacs-whats-the-best-way-for-keyboard-escape-quit-not-destroy-other-windows
-;; (defadvice keyboard-escape-quit
-;;   (around keyboard-escape-quit-dont-close-windows activate)
-;;   (let ((buffer-quit-function (lambda () ())))
-;;     ad-do-it))
-;; (global-set-key (kbd "<escape>") 'minibuffer-keyboard-quit)
-
-;; Disable Ctrl-Z suspend-frame
-(defun sph/suspend-frame ()
-  "In a GUI environment, do nothing; otherwise `suspend-frame'."
-  (interactive)
-  (if (display-graphic-p)
-      (message "suspend-frame disabled for graphical displays.")
-    (suspend-frame)))
-(global-set-key (kbd "C-x C-z") 'sph/suspend-frame)
-(global-set-key (kbd "C-z") 'sph/suspend-frame)
 
 ;;; Modular config starts here
 
 (defvar sph/src-dir (expand-file-name "src" user-emacs-directory))
 (add-to-list 'load-path sph/src-dir)
 
+(require 'sph-prelude)
+
 (require 'sph-themes)
 (require 'sph-ui)
 
 (require 'sph-lang-lisp)
+
+(require 'sph-keybinds)
 
 
 ;; Server
