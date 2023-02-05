@@ -1,4 +1,4 @@
-(defvar sph-keyboard-layout 'qwerty)
+(defvar sph-keyboard-layout 'moonlander)
 
 
 (provide 'sph-prelude)

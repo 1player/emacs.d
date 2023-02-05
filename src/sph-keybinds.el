@@ -31,12 +31,17 @@
 (global-set-key (kbd "<escape>") #'abort-recursive-edit)
 
 (when (equal sph-keyboard-layout 'moonlander)
-  (global-set-key (kbd "C-:") #'undo-only)
-  (global-set-key (kbd "C-;") #'undo-redo))
+  (global-set-key (kbd "C-,") #'undo-only)
+  (global-set-key (kbd "C-.") #'undo-redo))
 
 (when (equal sph-keyboard-layout 'qwerty)
-  (global-set-key (kbd "M-`") #'other-window))
+    (global-set-key (kbd "M-`") #'other-window))
 
 ;; Hyper keybinds
+
+(when (equal sph-keyboard-layout 'moonlander)
+  (global-set-key (kbd "C-M-s-o") #'other-window)
+  (global-set-key (kbd "C-M-s-q") #'delete-window)
+  (global-set-key (kbd "C-M-s-w") #'delete-other-windows))
 
 (provide 'sph-keybinds)
