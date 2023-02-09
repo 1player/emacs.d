@@ -208,9 +208,8 @@
 (use-package crux
   :bind (("C-a" . #'crux-move-beginning-of-line)
          ("<home>" . #'crux-move-beginning-of-line)
-         ("C-o" . #'crux-smart-open-line)
-         ("M-o" . #'crux-smart-open-line-above)
-                                        ;("C-k" . #'crux-smart-kill-line)
+         ("C-<return>" . #'crux-smart-open-line)
+         ("M-<return>" . #'crux-smart-open-line-above)
          ("C-c i" . #'crux-find-user-init-file)
          ("C-x K" . #'crux-kill-other-buffers)
          ("C-c w s" . #'crux-swap-windows)
