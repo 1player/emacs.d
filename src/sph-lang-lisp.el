@@ -1,5 +1,7 @@
 (use-package paredit)
 
+(use-package parinfer-rust-mode)
+
 ;; Don't use slime because it doesn't work
 ;; with corfu completions
 ;;

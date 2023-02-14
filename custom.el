@@ -11,7 +11,7 @@
  '(ignored-local-variable-values '((flycheck-disabled-checkers emacs-lisp-checkdoc)))
  '(native-comp-async-report-warnings-errors 'silent)
  '(package-selected-packages
-   '(moody sly embark-consult eat centered-window centered-window-mode olivetti paredit dired-sidebar all-the-icons treemacs ef-themes el-themes corfu perspective persp-mode sideline-flymake tide vterm evil-leader undo-tree doom-modeline counsel editorconfig zeno-theme which-key use-package selectrum-prescient magit lsp-mode ivy go-mode evil diminish)))
+   '(parinfer-rust-mode parinfer-mode parinfer ace-window moody sly embark-consult eat centered-window centered-window-mode olivetti paredit dired-sidebar all-the-icons treemacs ef-themes el-themes corfu perspective persp-mode sideline-flymake tide vterm evil-leader undo-tree doom-modeline counsel editorconfig zeno-theme which-key use-package selectrum-prescient magit lsp-mode ivy go-mode evil diminish)))
 (custom-set-faces
  ;; custom-set-faces was added by Custom.
  ;; If you edit it by hand, you could mess it up, so be careful.
