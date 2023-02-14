@@ -22,26 +22,24 @@
 (global-set-key (kbd "C-c c") #'recompile)
 (global-set-key (kbd "C-c C") #'project-compile)
 
-(global-set-key (kbd "M-<up>") #'windmove-up)
-(global-set-key (kbd "M-<down>") #'windmove-down)
-(global-set-key (kbd "M-<left>") #'windmove-left)
-(global-set-key (kbd "M-<right>") #'windmove-right)
-
-;; (define-key key-translation-map (kbd "ESC") (kbd "C-]"))
 (global-set-key (kbd "<escape>") #'abort-recursive-edit)
+
+(with-eval-after-load "eglot"
+  (global-set-key (kbd "C-c f") #'eglot-format-buffer))
 
 (when (equal sph-keyboard-layout 'moonlander)
   (global-set-key (kbd "C-,") #'undo-only)
   (global-set-key (kbd "C-.") #'undo-redo))
 
-(when (equal sph-keyboard-layout 'qwerty)
-    (global-set-key (kbd "M-`") #'other-window))
+;; (when (equal sph-keyboard-layout 'qwerty)
+;;     (global-set-key (kbd "M-`") #'other-window))
 
 ;; Hyper keybinds
 
 (when (equal sph-keyboard-layout 'moonlander)
-  (global-set-key (kbd "C-M-s-o") #'other-window)
+  ;; (global-set-key (kbd "C-M-s-o") #'other-window)
   (global-set-key (kbd "C-M-s-q") #'delete-window)
+  (global-set-key (kbd "C-M-s-s") #'save-buffer)
   (global-set-key (kbd "C-M-s-w") #'delete-other-windows))
 
 (provide 'sph-keybinds)

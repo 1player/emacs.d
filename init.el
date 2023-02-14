@@ -95,25 +95,31 @@
   (setq tab-always-indent 'complete)
   (global-corfu-mode))
 
+(use-package eldoc
+  :init
+  (add-to-list 'display-buffer-alist
+            '("^\\*eldoc" display-buffer-at-bottom
+              (window-height . 4)))
+  ;; (setq eldoc-echo-area-use-multiline-p nil)
+  (setq eldoc-idle-delay 0.1)
+  (setq eldoc-documentation-strategy
+          'eldoc-documentation-compose-eagerly))
+
 (use-package eglot
   :diminish
-  :hook ((go-mode python-mode rust-mode typescript-mode elixir-mode elixir-ts-mode heex-ts-mode) . eglot-ensure)
+  :hook (((go-mode php-mode python-mode rust-mode typescript-mode elixir-mode elixir-ts-mode heex-ts-mode) . eglot-ensure))
   :init
-  (setq eldoc-echo-area-use-multiline-p nil)
-  (setq eldoc-idle-delay 0.1)
   (setq eglot-ignored-server-capabilities '(:documentHighlightProvider))
   (add-hook 'eglot-managed-mode-hook
             (lambda ()
               (put 'eglot-note 'flymake-overlay-control nil)
               (put 'eglot-warning 'flymake-overlay-control nil)
-              (put 'eglot-error 'flymake-overlay-control nil)
+              (put 'eglot-error 'flymake-overlay-control nil)))
 
               ;; Show flymake diagnostics first.
-              (setq eldoc-documentation-functions
-                    (cons #'flymake-eldoc-function
-                          (remove #'flymake-eldoc-function eldoc-documentation-functions)))))
-  (setq eldoc-documentation-strategy 'eldoc-documentation-compose)
-  (setq eldoc-echo-area-prefer-doc-buffer t)
+              ;; (setq eldoc-documentation-functions
+              ;;       (cons #'flymake-eldoc-function
+              ;;             (remove #'flymake-eldoc-function eldoc-documentation-functions)))))
   (defun eglot-format-buffer-on-save ()
     (add-hook 'before-save-hook #'eglot-format-buffer -10 t))
   :config
@@ -161,9 +167,6 @@
   (setq rust-format-on-save t)
   ;; Don't show error buffer when trying to format invalid code
   (setq rust-format-show-buffer nil))
-
-(use-package php-mode
-  :defer t)
 
 (use-package typescript-mode
   :defer t)
@@ -225,9 +228,9 @@
 
 (use-package tempel)
 
-(use-package window-numbering
-  :config
-  (window-numbering-mode))
+;; (use-package window-numbering
+;;   :config
+;;   (window-numbering-mode))
 
 (use-package embark
   :bind (("C-." . #'embark-act)
@@ -502,6 +505,7 @@
 (require 'sph-ui)
 
 (require 'sph-lang-lisp)
+(require 'sph-lang-php)
 
 (require 'sph-keybinds)
 
