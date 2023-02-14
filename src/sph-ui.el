@@ -1,3 +1,9 @@
+;; Windows
+(use-package ace-window
+  :custom ((aw-scope 'frame)
+           (aw-keys '(?a ?r ?s ?t ?g ?m ?n ?e ?i ?o)))
+  :bind (("M-o" . #'ace-window)))
+
 ;; Mouse
 (setq
  ;; Disable mouse wheel acceleration
