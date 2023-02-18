@@ -57,11 +57,26 @@
   :init
   (marginalia-mode))
 
-(use-package orderless
-  :custom
-  (completion-styles '(orderless basic))
-  (completion-category-defaults nil)
-  (completion-category-overrides '((file (styles basic partial-completion)))))
+(use-package hotfuzz
+  :config
+  (setq completion-styles '(basic hotfuzz)))
+
+(use-package prescient
+  :config
+  (push 'prescient completion-styles)
+  (prescient-persist-mode))
+
+(use-package vertico-prescient
+  :config
+  (vertico-prescient-mode))
+
+
+
+;; (use-package orderless
+;;   :custom
+;;   (completion-styles '(orderless basic))
+;;   (completion-category-defaults nil)
+;;   (completion-category-overrides '((file (styles basic partial-completion)))))
 
 (use-package consult
   :defer t
@@ -198,16 +213,6 @@
   :config
   (direnv-mode))
 
-(use-package dtrt-indent
-  :diminish
-  :defer t)
-
-(use-package ws-butler
-  :diminish ws-butler-mode
-  :hook ((prog-mode markdown-mode text-mode) . ws-butler-mode)
-  :init
-  (setq ws-butler-keep-whitespace-before-point nil))
-
 (use-package crux
   :bind (("C-a" . #'crux-move-beginning-of-line)
          ("<home>" . #'crux-move-beginning-of-line)
@@ -276,6 +281,15 @@
 (use-package format-all)
 
 (use-package ef-themes)
+
+(use-package perspective
+  :requires consult
+  :custom
+  (persp-mode-prefix-key (kbd "C-c p"))
+  :config
+  (persp-mode)
+  (consult-customize consult--source-buffer :hidden t :default nil)
+  (add-to-list 'consult-buffer-sources persp-consult-source))
 
 ;; (use-package meow
 ;;   :config
@@ -374,14 +388,6 @@
 ;; Tree sitter
 (setq treesit-extra-load-path `(,(expand-file-name "~/.local/share/tree-sitter")))
 
-;; Prog mode settings
-(add-hook 'prog-mode-hook (lambda ()
-                            ;; this_is-a-single_word
-                            (superword-mode 1)
-                            (dtrt-indent-mode 1)
-                            (electric-pair-local-mode 0)))
-
-
 ;; Use spaces, not tabs, for indentation.
 (setq-default indent-tabs-mode nil)
 
@@ -437,19 +443,6 @@
   (ansi-color-apply-on-region compilation-filter-start (point)))
 (add-hook 'compilation-filter-hook 'colorize-compilation-buffer)
 
-;; Completions
-;; 12 Oct 2022 - Disable for now
-;; (setq completions-format 'one-column)
-;; (setq completions-header-format nil)
-;; (setq completions-max-height 20)
-;; (setq completion-auto-select nil)
-
-;; (define-key minibuffer-mode-map (kbd "C-n") 'minibuffer-next-completion)
-;; (define-key minibuffer-mode-map (kbd "C-p") 'minibuffer-previous-completion)
-
-;; (define-key completion-in-region-mode-map (kbd "C-n") 'minibuffer-next-completion)
-;; (define-key completion-in-region-mode-map (kbd "C-p") 'minibuffer-previous-completion)
-
 
 ;; Auto revert
 (global-auto-revert-mode 1)
@@ -503,6 +496,7 @@
 
 (require 'sph-themes)
 (require 'sph-ui)
+(require 'sph-programming)
 
 (require 'sph-lang-lisp)
 (require 'sph-lang-php)

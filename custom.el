@@ -11,7 +11,7 @@
  '(ignored-local-variable-values '((flycheck-disabled-checkers emacs-lisp-checkdoc)))
  '(native-comp-async-report-warnings-errors 'silent)
  '(package-selected-packages
-   '(parinfer-rust-mode parinfer-mode parinfer ace-window moody sly embark-consult eat centered-window centered-window-mode olivetti paredit dired-sidebar all-the-icons treemacs ef-themes el-themes corfu perspective persp-mode sideline-flymake tide vterm evil-leader undo-tree doom-modeline counsel editorconfig zeno-theme which-key use-package selectrum-prescient magit lsp-mode ivy go-mode evil diminish)))
+   '(perspective hotfuzz vertico-prescient prescient php-mode sly parinfer-rust-mode paredit ws-butler dtrt-indent ace-window eat olivetti ef-themes format-all geiser-chicken pulsar whole-line-or-region highlight-indent-guides deadgrep helpful embark-consult embark tempel expand-region avy crux direnv editorconfig magit zig-mode web-mode yaml-mode typescript-mode rust-mode markdown-mode lua-mode json-mode janet-mode go-mode fish-mode elixir-ts-mode crystal-mode corfu flymake-shellcheck which-key consult orderless marginalia vertico diminish sensible-defaults)))
 (custom-set-faces
  ;; custom-set-faces was added by Custom.
  ;; If you edit it by hand, you could mess it up, so be careful.

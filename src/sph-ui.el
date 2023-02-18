@@ -70,5 +70,4 @@
 
 (global-set-key [f12] #'sph/toggle-menu-bar)
 
-
 (provide 'sph-ui)
