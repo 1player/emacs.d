@@ -32,8 +32,6 @@
 
 (global-set-key (kbd "<escape>") #'abort-recursive-edit)
 
-(global-set-key (kbd "TAB") 'smart-tab)
-
 (with-eval-after-load "eglot"
   (global-set-key (kbd "C-c f") #'eglot-format-buffer))
 

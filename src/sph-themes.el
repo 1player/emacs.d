@@ -5,6 +5,10 @@
 (set-frame-font "Iosevka Comfy-14" nil t)
 (setq-default line-spacing nil)
 
+(use-package doom-themes)
+
+(use-package ef-themes)
+
 ;; Theme customization
 
 (with-eval-after-load 'modus-themes
@@ -46,8 +50,8 @@
     ('autumn 'ef-day)
     ('winter 'ef-light)))
 
-(defvar sph/light-theme (light-theme-for-this-season))
-(defvar sph/dark-theme 'modus-vivendi)
+(defvar sph/light-theme 'modus-operandi-tinted)
+(defvar sph/dark-theme 'modus-vivendi-tinted)
 (defvar sph/current-theme nil)
 
 
