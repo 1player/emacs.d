@@ -44,7 +44,7 @@
     ('spring 'ef-spring)
     ('summer 'ef-summer)
     ('autumn 'ef-day)
-    ('winter 'modus-operandi)))
+    ('winter 'ef-light)))
 
 (defvar sph/light-theme (light-theme-for-this-season))
 (defvar sph/dark-theme 'modus-vivendi)
