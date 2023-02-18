@@ -9,9 +9,7 @@
  '(electric-pair-skip-whitespace nil)
  '(geiser-chicken-binary "chicken-csi")
  '(ignored-local-variable-values '((flycheck-disabled-checkers emacs-lisp-checkdoc)))
- '(native-comp-async-report-warnings-errors 'silent)
- '(package-selected-packages
-   '(perspective hotfuzz vertico-prescient prescient php-mode sly parinfer-rust-mode paredit ws-butler dtrt-indent ace-window eat olivetti ef-themes format-all geiser-chicken pulsar whole-line-or-region highlight-indent-guides deadgrep helpful embark-consult embark tempel expand-region avy crux direnv editorconfig magit zig-mode web-mode yaml-mode typescript-mode rust-mode markdown-mode lua-mode json-mode janet-mode go-mode fish-mode elixir-ts-mode crystal-mode corfu flymake-shellcheck which-key consult orderless marginalia vertico diminish sensible-defaults)))
+ '(native-comp-async-report-warnings-errors 'silent))
 (custom-set-faces
  ;; custom-set-faces was added by Custom.
  ;; If you edit it by hand, you could mess it up, so be careful.

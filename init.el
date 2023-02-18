@@ -7,43 +7,41 @@
 
 (setq
  user-full-name "Stephane Travostino"
- user-mail-address "sph@combo.cc")
+ user-mail-address "steph@combo.cc")
+
+;;; Packaging boilerplate
+(defvar bootstrap-version)
+(let ((bootstrap-file
+       (expand-file-name "straight/repos/straight.el/bootstrap.el" user-emacs-directory))
+      (bootstrap-version 6))
+  (unless (file-exists-p bootstrap-file)
+    (with-current-buffer
+        (url-retrieve-synchronously
+         "https://raw.githubusercontent.com/radian-software/straight.el/develop/install.el"
+         'silent 'inhibit-cookies)
+      (goto-char (point-max))
+      (eval-print-last-sexp)))
+  (load bootstrap-file nil 'nomessage))
+
+(require 'straight)
+(setq straight-use-package-by-default t)
+(straight-use-package 'use-package)
 
 ;; Packages
-
-(require 'package)
-
-(add-to-list 'package-archives '("gnu"   . "https://elpa.gnu.org/packages/"))
-(add-to-list 'package-archives '("melpa" . "https://melpa.org/packages/"))
-(add-to-list 'package-archives '("nongnu" . "https://elpa.nongnu.org/nongnu/"))
-(package-initialize)
-
-(unless (package-installed-p 'use-package)
-  (package-refresh-contents)
-  (package-install 'use-package))
-
-(setq use-package-always-ensure t
-      use-package-expand-minimally t)
-
-;; Adapted from https://tony-zorman.com/posts/2022-11-30-package-vc-install.html
-(cl-defun sph/vc-install (url &key name rev backend)
-  (let* ((iname (when name (intern name)))
-         (pac-name (or iname (intern (file-name-base url)))))
-    (unless (package-installed-p pac-name)
-      (package-vc-install url rev backend))))
 
 ;; TODO: there is no reason why we can't use the upstream package instead of our fork
 ;; and just load the settings and keybinds we want to use
 (use-package sensible-defaults
-  :init (sph/vc-install "https://github.com/1player/sensible-defaults.el" :name "sensible-defaults")
+  :straight (sensible-defaults :type git :host github
+                               :repo "1player/sensible-defaults.el")
   :config
   (sensible-defaults/use-all-settings)
   (sensible-defaults/use-all-keybindings))
 
-(use-package diminish
-  :ensure t)
+(use-package diminish)
 
 (use-package vertico
+  :straight (:files (:defaults "extensions/*"))
   :bind (:map vertico-map
               ("RET" . #'vertico-directory-enter)
 	          ("<prior>" . #'vertico-scroll-down)
@@ -380,7 +378,14 @@
   :defer t)
 
 (use-package eat
-  :init (sph/vc-install "https://codeberg.org/akib/emacs-eat.git" :name "eat")
+  :straight (eat :type git
+       :host codeberg
+       :repo "akib/emacs-eat"
+       :files ("*.el" ("term" "term/*.el") "*.texi"
+               "*.ti" ("terminfo/e" "terminfo/e/*")
+               ("terminfo/65" "terminfo/65/*")
+               ("integration" "integration/*")
+               (:exclude ".dir-locals.el" "*-tests.el")))
   :bind (("C-x p t" . #'eat-project)
          ("C-c t" . #'eat)))
 
