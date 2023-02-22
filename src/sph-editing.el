@@ -24,6 +24,13 @@
 (use-package olivetti
   :defer t)
 
+(use-package project-x
+  :straight (project-x :type git :host github
+                       :repo "karthink/project-x")
+  :after project
+  :config
+  (add-hook 'project-find-functions 'project-x-try-local -90))
+
 (global-set-key (kbd "M-<delete>") #'kill-word)
 (global-set-key (kbd "M-DEL") #'backward-kill-word)
 
