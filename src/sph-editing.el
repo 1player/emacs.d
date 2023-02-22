@@ -24,5 +24,7 @@
 (use-package olivetti
   :defer t)
 
+(global-set-key (kbd "M-<delete>") #'kill-word)
+(global-set-key (kbd "M-DEL") #'backward-kill-word)
 
 (provide 'sph-editing)
