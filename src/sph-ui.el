@@ -1,9 +1,3 @@
-;; Windows
-(use-package ace-window
-  :custom ((aw-scope 'frame)
-           (aw-keys '(?a ?r ?s ?t ?g ?m ?n ?e ?i ?o)))
-  :bind (("M-o" . #'ace-window)))
-
 ;; Mouse
 (setq
  ;; Disable mouse wheel acceleration
@@ -11,9 +5,6 @@
  ;; Scroll 3 lines at a time, full screens while holding SHIFT
  mouse-wheel-scroll-amount '(3 ((shift) . nil)))
 
-
-;; 09 Sep 2022: Works almost perfectly, but needs to press PgUp/PgDown twice when at the
-;; top or bottom of the file.
 (pixel-scroll-precision-mode 1)
 (setq pixel-scroll-precision-interpolate-page t)
 (setq pixel-scroll-precision-use-momentum t)
@@ -21,10 +12,6 @@
 (setq pixel-scroll-precision-momentum-min-velocity 10.0)
 (setq pixel-scroll-precision-initial-velocity-factor 0.005)
 (setq pixel-scroll-precision-large-scroll-height nil)
-
-;; Try this with Emacs 29 or with pgtk, if mouse wheel is laggy
-;; See also: https://lists.gnu.org/archive/html/bug-gnu-emacs/2022-03/msg00803.html
-;; (setq mwheel-coalesce-scroll-events nil)
 
 ;; Scroll just enough to show the next line, like
 ;; other editors do.
@@ -52,12 +39,24 @@
 (setq switch-to-buffer-obey-display-actions t)
 (setq switch-to-buffer-in-dedicated-window 'pop)
 
+(global-set-key (kbd "C-0") #'delete-window)
+(global-set-key (kbd "C-1") #'delete-other-windows)
+(global-set-key (kbd "C-2") #'split-window-below)
+(global-set-key (kbd "C-3") #'split-window-right)
+
+(use-package ace-window
+  :custom ((aw-scope 'frame)
+           (aw-keys '(?a ?r ?s ?t ?g ?m ?n ?e ?i ?o)))
+  :bind (("C-M-s-v" . #'ace-window)))
+
 ;; winner-mode, but with support for tabs
 (winner-mode 1)
 
-(setq tab-bar-format '(tab-bar-format-tabs tab-bar-format-add-tab))
-(setq tab-bar-show 1) ; show only when more than one tab
-(tab-bar-history-mode 1)
+;; consult
+(use-package consult
+  :defer t
+  :bind (("C-x b" . #'consult-buffer)
+         ("C-x 4 b" . #'consult-buffer-other-window)))
 
 
 ;; F12 toggles menu

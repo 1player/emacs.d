@@ -20,12 +20,12 @@
 (use-package eldoc
   :init
   (add-to-list 'display-buffer-alist
-            '("^\\*eldoc" display-buffer-at-bottom
-              (window-height . 4)))
+               '("^\\*eldoc" display-buffer-at-bottom
+                 (window-height . 4)))
   ;; (setq eldoc-echo-area-use-multiline-p nil)
   (setq eldoc-idle-delay 0.1)
   (setq eldoc-documentation-strategy
-          'eldoc-documentation-compose-eagerly))
+        'eldoc-documentation-compose-eagerly))
 
 
 (use-package flymake-shellcheck
@@ -63,6 +63,14 @@
 
 
 (use-package format-all)
+
+(defun sph-format-buffer ()
+  "Formats the buffer with the best available method."
+  (interactive)
+  (cond ((fboundp 'eglot-format-buffer) (eglot-format-buffer))
+        ((fboundp 'format-all-buffer) (format-all-buffer))))
+
+(global-set-key (kbd "C-c f") #'sph-format-buffer)
 
 (add-hook 'prog-mode-hook (lambda ()
                             (superword-mode 1)

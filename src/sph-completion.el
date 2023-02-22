@@ -34,9 +34,5 @@
   (global-corfu-mode))
 
 
-(use-package consult
-  :defer t
-  :bind (("C-x b" . #'consult-buffer)))
-
 
 (provide 'sph-completion)

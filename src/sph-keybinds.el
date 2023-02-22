@@ -32,30 +32,10 @@
 
 (global-set-key (kbd "<escape>") #'abort-recursive-edit)
 
-(with-eval-after-load "eglot"
-  (global-set-key (kbd "C-c f") #'eglot-format-buffer))
+;; Moonlander keybinds
 
-
-(when (equal sph-keyboard-layout 'moonlander)
-  (global-set-key (kbd "C-,") #'undo-only)
-  (global-set-key (kbd "C-.") #'undo-redo))
-
-;; (when (equal sph-keyboard-layout 'qwerty)
-;;     (global-set-key (kbd "M-`") #'other-window))
-
-;; Hyper keybinds
-
-(when (equal sph-keyboard-layout 'moonlander)
-  (global-set-key (kbd "C-M-s-q") #'delete-window)
-  (global-set-key (kbd "C-M-s-s") #'save-buffer)
-  (global-set-key (kbd "C-M-s-g") #'keyboard-quit)
-  (global-set-key (kbd "C-M-s-k") #'kill-this-buffer)
-  (global-set-key (kbd "C-M-s-t") #'eat-project)
-  (global-set-key (kbd "C-M-s-o") #'ace-window)
-  (global-set-key (kbd "C-M-s-w") #'delete-other-windows))
-
-(with-eval-after-load "consult"
-  (when (equal sph-keyboard-layout 'moonlander)
-    (global-set-key (kbd "C-M-s-b") #'consult-buffer)))
+(global-set-key (kbd "<HomePage>") (key-binding (kbd "C-x b")))
+(global-set-key (kbd "C-M-s-u") #'undo-only)
+(global-set-key (kbd "C-M-s-y") #'undo-redo)
 
 (provide 'sph-keybinds)
