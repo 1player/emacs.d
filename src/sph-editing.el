@@ -4,7 +4,6 @@
 
 
 (use-package whole-line-or-region
-  :bind (("M-," . #'whole-line-or-region-comment-dwim-2))
   :config
   (whole-line-or-region-global-mode 1))
 

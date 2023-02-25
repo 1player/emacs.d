@@ -71,6 +71,8 @@
         ((fboundp 'format-all-buffer) (format-all-buffer))))
 
 (global-set-key (kbd "C-c f") #'sph-format-buffer)
+(global-set-key (kbd "M-m") #'comment-dwim)
+
 
 (add-hook 'prog-mode-hook (lambda ()
                             (superword-mode 1)
