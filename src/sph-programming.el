@@ -67,7 +67,7 @@
 (defun sph-format-buffer ()
   "Formats the buffer with the best available method."
   (interactive)
-  (cond ((fboundp 'eglot-format-buffer) (eglot-format-buffer))
+  (cond (eglot--managed-mode (eglot-format-buffer))
         ((fboundp 'format-all-buffer) (format-all-buffer))))
 
 (global-set-key (kbd "C-c f") #'sph-format-buffer)

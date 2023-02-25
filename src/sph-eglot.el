@@ -1,5 +1,6 @@
 (use-package eglot
   :diminish
+  :defer nil
   :hook (((go-mode php-mode python-mode rust-mode typescript-mode) . eglot-ensure))
   :init
   (setq eglot-ignored-server-capabilities '(:documentHighlightProvider)))
