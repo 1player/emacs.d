@@ -29,6 +29,7 @@
 
 ;; Dired
 (require 'dired)
+(require 'dired-x)
 
 (setq
  delete-by-moving-to-trash t
@@ -48,7 +49,7 @@
 (define-key dired-mode-map (kbd "DEL") #'dired-up-directory)
 (define-key dired-mode-map (kbd "SPC") #'dired-find-file)
 
-(require 'dired-x)
+(global-set-key (kbd "C-x C-d") #'dired-jump)
 
 ;; Compile accepts ANSI colors
 (require 'ansi-color)
