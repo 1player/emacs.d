@@ -32,6 +32,10 @@
 
 (global-set-key (kbd "<escape>") #'abort-recursive-edit)
 
+(global-set-key (kbd "M-<home>") #'beginning-of-buffer)
+(global-set-key (kbd "M-<end>") #'end-of-buffer)
+
+
 ;; Moonlander keybinds
 
 (global-set-key (kbd "<HomePage>") (key-binding (kbd "C-x b")))

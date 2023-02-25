@@ -43,11 +43,12 @@
 (global-set-key (kbd "C-1") #'delete-other-windows)
 (global-set-key (kbd "C-2") #'split-window-below)
 (global-set-key (kbd "C-3") #'split-window-right)
+(global-set-key (kbd "C-<tab>") #'other-window)
 
 (use-package ace-window
   :custom ((aw-scope 'frame)
            (aw-keys '(?a ?r ?s ?t ?g ?m ?n ?e ?i ?o)))
-  :bind (("C-M-s-v" . #'ace-window)))
+  :bind (("C-M-s-a" . #'ace-window)))
 
 ;; winner-mode, but with support for tabs
 (winner-mode 1)
