@@ -1,6 +1,6 @@
 (use-package elixir-ts-mode)
 
-(dolist (mode '(elixir-mode-hook elixir-ts-mode-hook heex-ts-mode-hook))
+(dolist (mode '(elixir-ts-mode-hook heex-ts-mode-hook))
   (add-hook mode #'eglot-ensure))
 
 (with-eval-after-load 'eglot
