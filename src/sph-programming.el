@@ -75,7 +75,6 @@
 
 
 (add-hook 'prog-mode-hook (lambda ()
-                            (superword-mode 1)
-                            (electric-pair-local-mode 1)))
+                            (superword-mode 1)))
 
 (provide 'sph-programming)
