@@ -2,7 +2,7 @@
 
 (add-to-list 'custom-theme-load-path "~/.emacs.d/themes")
 
-(set-frame-font "Iosevka Comfy-14" nil t)
+(set-frame-font "Iosevka Comfy-13" nil t)
 (setq-default line-spacing nil)
 
 (use-package doom-themes)
