@@ -103,7 +103,7 @@
 (require 'sph-eglot)
 (require 'sph-tree-sitter)
 ;; (require 'sph-meow)
-;; (require 'sph-tramp)
+(require 'sph-tramp)
 
 (require 'sph-lang-elixir)
 (require 'sph-lang-go)
