@@ -1,5 +1,9 @@
+(define-prefix-command 'avy-map)
+(global-set-key (kbd "M-m") 'avy-map)
+
 (use-package avy
-  :bind (("M-j" . #'avy-goto-char))
+  :bind (("M-m M-m" . #'avy-goto-char)
+         ("M-m M-n" . #'avy-goto-line))
   :custom (avy-keys '(?a ?r ?s ?t ?g ?m ?n ?e ?i ?o)))
 
 
