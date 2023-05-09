@@ -47,9 +47,6 @@
   :bind (("C--" . #'er/expand-region)
          ("C-=" . #'er/contract-region)))
 
-(use-package tempel)
-
-
 (use-package deadgrep
   :defer t
   :bind (:map deadgrep-mode-map
@@ -62,17 +59,37 @@
   (setq highlight-indent-guides-method 'bitmap))
 
 
+;; Code formatting
+
 (use-package format-all)
+
+(require 'format-all)
 
 (defun sph-format-buffer ()
   "Formats the buffer with the best available method."
   (interactive)
-  (cond (eglot--managed-mode (eglot-format-buffer))
-        ((fboundp 'format-all-buffer) (format-all-buffer))))
+  (cond ((and (fboundp 'eglot-format-buffer) eglot--managed-mode)
+         (eglot-format-buffer))
+        ((fboundp 'format-all-buffer)
+         (format-all-ensure-formatter)
+         (format-all-buffer))
+        t (message "Requires eglot or format-all")))
+
+(define-minor-mode sph-format-on-save-mode
+  "Automatically format buffer on save"
+  :lighter "FoS")
+
+(add-hook 'sph-format-on-save-mode-hook
+          (lambda ()
+            (if sph-format-on-save-mode
+                (add-hook 'before-save-hook #'sph-format-buffer -10 t)
+              (remove-hook 'before-save-hook #'sph-format-buffer t))))
 
 (global-set-key (kbd "C-c f") #'sph-format-buffer)
 (global-set-key (kbd "M-j") #'comment-dwim)
 
+;; Other languages
+(use-package just-mode)
 
 (add-hook 'prog-mode-hook (lambda ()
                             (superword-mode 1)))

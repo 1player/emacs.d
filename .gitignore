@@ -6,7 +6,9 @@ backups
 bookmarks
 devdocs
 eln-cache
+elpa
 history
+multisession
 parinfer-rust/
 places
 projects

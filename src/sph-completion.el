@@ -29,10 +29,17 @@
 
 
 (use-package corfu
-  :init
-  (setq tab-always-indent 'complete)
+  :bind (:map corfu-map
+              ("RET" . nil)
+              ("<escape>" . corfu-quit))
+  :custom
+  (corfu-auto t)
+  :config
   (global-corfu-mode))
 
-
+(use-package cape
+  :init
+  (dolist (backend '(cape-dabbrev cape-file cape-abbrev))
+    (add-to-list 'completion-at-point-functions backend)))
 
 (provide 'sph-completion)

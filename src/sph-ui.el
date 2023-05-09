@@ -35,6 +35,9 @@
 ;; Allow motion during search
 (setq isearch-allow-motion t)
 
+;; Open context menu with right click
+(context-menu-mode 1)
+
 ;; Windows
 (setq switch-to-buffer-obey-display-actions t)
 (setq switch-to-buffer-in-dedicated-window 'pop)
@@ -49,6 +52,10 @@
   :custom ((aw-scope 'frame)
            (aw-keys '(?a ?r ?s ?t ?g ?m ?n ?e ?i ?o)))
   :bind (("C-M-s-a" . #'ace-window)))
+
+;; Turn an horizontal split vertical, or viceversa
+(use-package transpose-frame
+  :bind (("C-c w t" . 'transpose-frame)))
 
 ;; winner-mode, but with support for tabs
 (winner-mode 1)

@@ -19,7 +19,6 @@
 (global-set-key (kbd "C-z") #'sph-suspend-frame)
 
 (global-set-key (kbd "C-x C-r") #'revert-buffer-quick)
-(global-set-key (kbd "C-x k") #'kill-this-buffer)
 
 (global-set-key (kbd "<mouse-8>") #'switch-to-prev-buffer)
 (global-set-key (kbd "<Back>") #'switch-to-prev-buffer)

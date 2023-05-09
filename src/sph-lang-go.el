@@ -1,12 +1,12 @@
-(require 'sph-eglot)
+(require 'sph-programming)
 
 (use-package go-mode
-  :defer
+  :hook
+  (go-mode . eglot-ensure)
+  (go-mode . sph-format-on-save-mode)
   :config
-  (defun sph-go-mode-hook ()
-    (set (make-local-variable 'compile-command)
-         "go run ./...")
-    (add-hook 'before-save-hook 'eglot-format-buffer -10 t))
-  (add-hook 'go-mode-hook 'sph/go-mode-hook))
+  (add-hook 'go-mode-hook (lambda ()
+                            (set (make-local-variable 'compile-command)
+                                 "go run ./..."))))
 
 (provide 'sph-lang-go)

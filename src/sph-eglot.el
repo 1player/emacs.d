@@ -1,5 +1,6 @@
 (use-package eglot
   :diminish
+  :custom ((eglot-ignored-server-capabilities '(:documentHighlightProvider)))
   :defer nil
   :hook (((go-mode php-mode python-mode rust-mode typescript-mode) . eglot-ensure))
   :init
@@ -7,10 +8,12 @@
             (lambda ()
               (put 'eglot-note 'flymake-overlay-control nil)
               (put 'eglot-warning 'flymake-overlay-control nil)
-              (put 'eglot-error 'flymake-overlay-control nil)))
-  (setq eglot-ignored-server-capabilities '(:documentHighlightProvider)))
+              (put 'eglot-error 'flymake-overlay-control nil)
 
-(defun eglot-format-buffer-on-save ()
-    (add-hook 'before-save-hook #'eglot-format-buffer -10 t))
+              ;; Show flymake diagnostics first.
+              (setq eldoc-documentation-functions (cons #'flymake-eldoc-function
+                                                        (remove #'flymake-eldoc-function
+                                                                eldoc-documentation-functions)))
+              (eglot-inlay-hints-mode -1))))
 
 (provide 'sph-eglot)
