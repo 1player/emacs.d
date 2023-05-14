@@ -66,6 +66,19 @@
   :bind (("C-x b" . #'consult-buffer)
          ("C-x 4 b" . #'consult-buffer-other-window)))
 
+(use-package popper
+  :bind (("<f10>" . popper-toggle-latest)
+         ("<f9>" . popper-cycle)
+         ("M-<f9>" . popper-toggle-type))
+  :init
+  (setq popper-group-function #'popper-group-by-project)
+  (setq popper-reference-buffers
+        '("\\*Messages\\*$"
+          "-eat\\*$" eat-mode
+          help-mode
+          compilation-mode))
+  (popper-mode +1)
+  (popper-echo-mode +1))
 
 ;; F12 toggles menu
 (defun sph/toggle-menu-bar ()

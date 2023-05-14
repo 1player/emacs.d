@@ -38,7 +38,7 @@
   (global-corfu-mode))
 
 (use-package cape
-  :init
+  :config
   (dolist (backend '(cape-dabbrev cape-file cape-abbrev))
     (add-to-list 'completion-at-point-functions backend)))
 
