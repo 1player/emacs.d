@@ -90,7 +90,10 @@
                          ("integration" "integration/*")
                          (:exclude ".dir-locals.el" "*-tests.el")))
   :bind (("C-x p t" . #'eat-project)
-         ("C-c t" . #'eat)))
+         ("C-c t" . #'eat))
+  :config
+  (with-eval-after-load "evil"
+    (add-to-list 'evil-emacs-state-modes 'eat-mode)))
 
 
 ;;; Modular config starts here

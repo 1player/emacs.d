@@ -107,7 +107,10 @@
   :bind (("C-h f" . #'helpful-callable)
          ("C-h v" . #'helpful-variable)
          ("C-h k" . #'helpful-key)
-         ("C-h x" . #'helpful-command)))
+         ("C-h x" . #'helpful-command))
+  :init
+  (with-eval-after-load "evil"
+    (add-to-list 'evil-emacs-state-modes 'helpful-mode)))
 
 
 (provide 'sph-prelude)

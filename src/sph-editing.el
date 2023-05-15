@@ -1,3 +1,22 @@
+(use-package evil
+  :custom
+  (evil-want-C-i-jump nil)
+  (evil-want-C-u-scroll nil)
+  (evil-want-C-u-scroll nil)
+  (evil-want-C-w-delete nil)
+  (evil-want-C-w-in-emacs-state t)
+  (evil-shift-width 2)
+  (evil-undo-system 'undo-redo)
+  :init
+  (setq evil-want-integration nil)
+  :config
+  (dolist (mode '(xref--xref-buffer-mode))
+    (add-to-list 'evil-emacs-state-modes mode))
+
+  (define-key evil-motion-state-map (kbd "C-e") nil)
+  (define-key evil-motion-state-map (kbd "C-y") nil)
+  (evil-mode +1))
+
 (define-prefix-command 'avy-map)
 
 (use-package avy
