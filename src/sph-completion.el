@@ -29,6 +29,7 @@
 
 
 (use-package corfu
+  :demand t
   :bind (:map corfu-map
               ("RET" . nil)
               ("<escape>" . corfu-quit))
@@ -38,7 +39,7 @@
   (global-corfu-mode))
 
 (use-package cape
-  :config
+  :init
   (dolist (backend '(cape-dabbrev cape-file cape-abbrev))
     (add-to-list 'completion-at-point-functions backend)))
 
