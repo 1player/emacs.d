@@ -6,6 +6,11 @@
               (let ((elapsed (float-time (time-subtract (current-time) emacs-start-time))))
                 (message "[Emacs initialized in %.3fs]" elapsed)))))
 
+;; Disable byte-compile warnings
+(setq byte-compile-warnings '(not obsolete))
+(setq warning-suppress-log-types '((comp) (bytecomp)))
+(setq native-comp-async-report-warnings-errors 'silent)
+
 (let ((gc-cons-threshold (* 256 1024 1024))
       (file-name-handler-alist nil)
       (src-directory (concat user-emacs-directory "src/"))
