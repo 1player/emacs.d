@@ -48,4 +48,4 @@ FEATURE may be any one of:
    (t
     `(with-eval-after-load ,feature ,@body))))
 
-(provide 'prelude)
+(provide 'sph-core-prelude)
