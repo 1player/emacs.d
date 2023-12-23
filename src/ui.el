@@ -41,4 +41,9 @@
 ;; Winner
 (winner-mode)
 
+;; Which key
+(require-package 'which-key)
+(setopt which-key-idle-delay 1.0)
+(which-key-mode)
+
 (provide 'sph-src-ui)
