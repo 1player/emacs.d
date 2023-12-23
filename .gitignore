@@ -5,5 +5,7 @@ backups/
 eln-cache/
 elpa/
 history
+projects
 recentf
 transient/
+var/

@@ -20,13 +20,13 @@
 
 ;; Hotfuzz
 (require-package 'hotfuzz)
-(after 'hotfuzz
-       (setq completion-styles '(basic hotfuzz)))
+(require 'hotfuzz)
+(setq completion-styles '(basic hotfuzz))
 
 ;; Prescient
 (require-package 'prescient)
-(after 'prescient
-       (push 'prescient completion-styles)
-       (prescient-persist-mode))
+(require 'prescient)
+(push 'prescient completion-styles)
+(prescient-persist-mode)
 
 (provide 'sph-src-completion)
