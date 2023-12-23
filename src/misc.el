@@ -40,4 +40,21 @@
 (recentf-mode 1)
 (setq recentf-max-menu-items 500)
 
+;; Auto revert
+(setopt auto-revert-interval 1)
+(global-auto-revert-mode 1)
+
+;; Typed text replaces selection
+(delete-selection-mode 1)
+
+;; Allow motion during search - not sure if needed
+(setq isearch-allow-motion t)
+
+;; Compile accepts ANSI colors
+(require 'ansi-color)
+(defun colorize-compilation-buffer ()
+  (ansi-color-apply-on-region compilation-filter-start (point)))
+(add-hook 'compilation-filter-hook 'colorize-compilation-buffer)
+
+
 (provide 'sph-src-misc)
