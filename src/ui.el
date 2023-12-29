@@ -46,4 +46,14 @@
 (setopt which-key-idle-delay 1.0)
 (which-key-mode)
 
+;; Helpful
+(require-package 'helpful)
+(global-set-key (kbd "C-h f") #'helpful-callable)
+(global-set-key (kbd "C-h v") #'helpful-variable)
+(global-set-key (kbd "C-h k") #'helpful-key)
+(global-set-key (kbd "C-h x") #'helpful-command)
+
+(after 'evil
+  (evil-set-initial-state 'helpful-mode 'motion))
+
 (provide 'sph-src-ui)

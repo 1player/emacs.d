@@ -19,6 +19,10 @@
   (require-package 'evil-surround)
   (global-evil-surround-mode)
 
+  (require-package 'evil-commentary)
+  (require 'evil-commentary)
+  (evil-define-key 'normal 'global (kbd "<localleader>c") 'evil-commentary)
+
   (require-package 'evil-collection)
   (add-hook 'evil-collection-setup-hook
             (lambda (_mode mode-keymaps)
@@ -34,7 +38,7 @@
   (evil-set-leader nil "," t)
 
   ;; Unbind annoying keys
-  (dolist (key '("C-a" "C-e"))
+  (dolist (key '("C-a" "C-e" "C-k"))
     (define-key evil-motion-state-map (kbd key) nil)
     (define-key evil-normal-state-map (kbd key) nil)
     (define-key evil-insert-state-map (kbd key) nil))

@@ -6,4 +6,7 @@
 (global-set-key (kbd "C-x 4 b") #'consult-buffer-other-window)
 (global-set-key (kbd "M-g i") #'consult-imenu)
 
+(after 'evil
+  (evil-define-key 'normal 'global "gs" 'consult-imenu))
+
 (provide 'sph-src-consult)

@@ -3,3 +3,4 @@
 (require-package 'magit)
 
 (provide 'sph-src-magit)
+

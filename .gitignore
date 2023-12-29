@@ -2,6 +2,7 @@ custom.el
 
 auto-save-list/
 backups/
+elisp/
 eln-cache/
 elpa/
 history
@@ -9,3 +10,4 @@ projects
 recentf
 transient/
 var/
+tramp

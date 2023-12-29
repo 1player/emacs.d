@@ -28,6 +28,14 @@
       vc-follow-symlinks t
       show-paren-delay 0.0)
 
+(setq-default indent-tabs-mode nil
+              tab-width 4)
+
+;; Autosaves
+(let ((auto-save-dir (file-name-as-directory (expand-file-name "autosaves" user-emacs-directory))))
+  (make-directory auto-save-dir t)
+  (setq auto-save-file-name-transforms `((".*" ,auto-save-dir t))))
+
 ;; Sensible defaults
 (add-hook 'prog-mode-hook 'subword-mode)
 (add-hook 'after-save-hook 'executable-make-buffer-file-executable-if-script-p)
@@ -56,5 +64,11 @@
   (ansi-color-apply-on-region compilation-filter-start (point)))
 (add-hook 'compilation-filter-hook 'colorize-compilation-buffer)
 
+(global-set-key (kbd "C-c c") #'recompile)
+(global-set-key (kbd "C-c C") #'project-compile)
+
+;; Direnv
+(require-package 'direnv)
+(direnv-mode)
 
 (provide 'sph-src-misc)
