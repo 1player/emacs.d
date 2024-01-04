@@ -1,6 +1,7 @@
 custom.el
 
 auto-save-list/
+autosaves/
 backups/
 elisp/
 eln-cache/

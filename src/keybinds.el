@@ -1,5 +1,12 @@
 ;;; -*- lexical-binding: t -*-
 
+(defun sph-suspend-frame ()
+  "In a GUI environment, do nothing; otherwise `suspend-frame'."
+  (interactive)
+  (if (display-graphic-p)
+      (message "suspend-frame disabled for graphical displays.")
+    (suspend-frame)))
+
 (global-set-key (kbd "<escape>") #'abort-recursive-edit)
 
 ;; Switch buffers with mouse side buttons
@@ -11,6 +18,7 @@
 (global-set-key (kbd "M-/") 'hippie-expand)
 (global-set-key (kbd "C-x C-b") 'ibuffer)
 (global-set-key (kbd "M-z") 'zap-up-to-char)
+(global-set-key (kbd "M-p") 'whole-line-or-region-comment-dwim)
 
 (global-set-key (kbd "C-s") 'isearch-forward-regexp)
 (global-set-key (kbd "C-r") 'isearch-backward-regexp)
@@ -26,25 +34,23 @@
 
 (global-set-key (kbd "C-x k") #'kill-this-buffer)
 
-(global-set-key (kbd "M-p") #'project-find-file)
+(global-set-key (kbd "C-x C-z") #'sph-suspend-frame)
+(global-set-key (kbd "C-z") #'sph-suspend-frame)
+(global-set-key (kbd "M-u") #'undo-only)
+(global-set-key (kbd "M-r") #'undo-redo)
+
+(global-set-key (kbd "C-x C-r") #'revert-buffer-quick)
+
+(global-set-key (kbd "M-g M-a") #'beginning-of-buffer)
+(global-set-key (kbd "M-g M-e") #'end-of-buffer)
 
 ;; Up and down history in interactive modes
 (define-key comint-mode-map (kbd "<up>") #'comint-previous-input)
 (define-key comint-mode-map (kbd "<down>") #'comint-next-input)
 
-;; Disable Ctrl-Z suspend-frame
-(defun sph-suspend-frame ()
-  "In a GUI environment, do nothing; otherwise `suspend-frame'."
-  (interactive)
-  (if (display-graphic-p)
-      (message "suspend-frame disabled for graphical displays.")
-    (suspend-frame)))
-
-(global-set-key (kbd "C-x C-z") #'sph-suspend-frame)
-(global-set-key (kbd "C-z") #'undo-only)
-(global-set-key (kbd "C-S-z") #'undo-redo)
-
-(global-set-key (kbd "C-x C-r") #'revert-buffer-quick)
+(when (eq sph-keyboard-layout 'moonlander)
+  (global-set-key (kbd "C-M-S-s") #'save-buffer)
+  (global-set-key (kbd "C-M-S-f") #'project-find-file))
 
 (after 'evil
   (evil-define-key 'normal 'global (kbd "<leader>SPC") #'consult-buffer)
