@@ -58,17 +58,5 @@
 ;; Allow motion during search - not sure if needed
 (setq isearch-allow-motion t)
 
-;; Compile accepts ANSI colors
-(require 'ansi-color)
-(defun colorize-compilation-buffer ()
-  (ansi-color-apply-on-region compilation-filter-start (point)))
-(add-hook 'compilation-filter-hook 'colorize-compilation-buffer)
-
-(global-set-key (kbd "C-c c") #'recompile)
-(global-set-key (kbd "C-c C") #'project-compile)
-
-;; Direnv
-(require-package 'direnv)
-(direnv-mode)
 
 (provide 'sph-src-misc)

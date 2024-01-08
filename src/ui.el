@@ -53,6 +53,8 @@
 (global-set-key (kbd "C-h k") #'helpful-key)
 (global-set-key (kbd "C-h x") #'helpful-command)
 
+(require-package 'golden-ratio)
+
 (after 'evil
   (evil-set-initial-state 'helpful-mode 'motion))
 

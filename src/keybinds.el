@@ -29,7 +29,7 @@
 (global-set-key (kbd "C-1") #'delete-other-windows)
 (global-set-key (kbd "C-2") #'split-window-below)
 (global-set-key (kbd "C-3") #'split-window-right)
-(global-set-key (kbd "M-o") #'other-window)
+(global-set-key (kbd "C-o") #'other-window)
 (global-set-key (kbd "C-<tab>") #'consult-buffer)
 
 (global-set-key (kbd "C-x k") #'kill-this-buffer)
@@ -49,6 +49,7 @@
 (define-key comint-mode-map (kbd "<down>") #'comint-next-input)
 
 (when (eq sph-keyboard-layout 'moonlander)
+  (global-set-key (kbd "C-M-S-SPC") #'consult-buffer)
   (global-set-key (kbd "C-M-S-s") #'save-buffer)
   (global-set-key (kbd "C-M-S-f") #'project-find-file))
 

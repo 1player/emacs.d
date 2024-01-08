@@ -1,6 +1,7 @@
 ;;; -*- lexical-binding: t -*-
 
 (require-package 'eglot)
+(require 'eglot)
 
 (setopt eglot-ignored-server-capabilities '(:documentHighlightProvider :documentLinkProvider :inlayHintProvider)
 	eglot-send-changes-idle-time 0.5
