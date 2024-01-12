@@ -9,7 +9,9 @@
 
 (defun setup-elixir-mode ()
   (eglot-ensure)
-  (sph-format-on-save-mode 1))
+  (sph-format-on-save-mode 1)
+
+  (setq-local compile-command "mix test "))
 
 (add-hook 'elixir-mode-hook #'setup-elixir-mode)
 (add-hook 'elixir-ts-mode-hook #'setup-elixir-mode)

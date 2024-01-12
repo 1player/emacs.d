@@ -7,6 +7,13 @@
       (message "suspend-frame disabled for graphical displays.")
     (suspend-frame)))
 
+(defun sph-find-user-init-file ()
+  "Open user init file."
+  (interactive)
+  (find-file user-init-file))
+
+(global-set-key (kbd "C-c i") #'sph-find-user-init-file)
+
 (global-set-key (kbd "<escape>") #'abort-recursive-edit)
 
 ;; Switch buffers with mouse side buttons

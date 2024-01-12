@@ -18,7 +18,6 @@
 (require-package 'crux)
 (global-set-key (kbd "C-a") #'crux-move-beginning-of-line)
 (global-set-key (kbd "<home>") #'crux-move-beginning-of-line)
-(global-set-key (kbd "C-c i") #'crux-find-user-init-file)
 (global-set-key (kbd "C-x K") #'crux-kill-other-buffers)
 (global-set-key (kbd "C-c w s") #'crux-swap-windows)
 (global-set-key (kbd "C-c r") #'crux-rename-buffer-and-file)
