@@ -32,4 +32,16 @@
 (require-package 'vertico-prescient)
 (vertico-prescient-mode)
 
+;; Company
+(require-package 'company)
+
+(setopt company-backends '((company-capf company-files company-yasnippet)))
+
+(with-eval-after-load 'company
+  (define-key company-active-map (kbd "<tab>") #'company-complete-selection)
+  (define-key company-active-map (kbd "RET") nil)
+  (define-key company-active-map (kbd "<return>") nil))
+
+(add-hook 'prog-mode-hook #'company-mode)
+
 (provide 'sph-src-completion)

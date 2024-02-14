@@ -1,7 +1,7 @@
 ;; -*- lexical-binding: t -*-
 
 ;; eldoc
-(setopt eldoc-idle-delay 2.0
+(setopt eldoc-idle-delay 0.5
         eldoc-documentation-strategy 'eldoc-documentation-compose)
 
 (add-to-list 'display-buffer-alist
@@ -27,5 +27,9 @@
 ;; Direnv
 (require-package 'direnv)
 (direnv-mode)
+
+;; yasnippet
+(require-package 'yasnippet)
+(yas-global-mode 1)
 
 (provide 'sph-src-programming)

@@ -17,7 +17,6 @@
       backup-by-copying t
       frame-inhibit-implied-resize t
       ediff-window-setup-function 'ediff-setup-windows-plain
-      initial-major-mode 'fundamental-mode
       create-lockfiles nil
       backup-by-copying t
       backup-directory-alist `(("." . ,(concat user-emacs-directory "backups")))
@@ -58,5 +57,7 @@
 ;; Allow motion during search - not sure if needed
 (setq isearch-allow-motion t)
 
+;; Try - to try packages
+(require-package 'try)
 
 (provide 'sph-src-misc)

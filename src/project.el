@@ -8,4 +8,4 @@
                                   (eat-project "Eat Shell" ?t)))
 
 
-(provide 'sph-src-magit)
+(provide 'sph-src-project)

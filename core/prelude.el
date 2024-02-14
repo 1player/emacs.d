@@ -48,4 +48,11 @@ FEATURE may be any one of:
    (t
     `(with-eval-after-load ,feature ,@body))))
 
+;; GC and other performance tweaks
+(require-package 'gcmh)
+(require 'gcmh)
+(gcmh-mode 1)
+
+(setopt read-process-output-max (* 1024 1024))
+
 (provide 'sph-core-prelude)

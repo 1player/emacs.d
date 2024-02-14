@@ -7,6 +7,23 @@
  ;; Scroll 3 lines at a time, full screens while holding SHIFT
  mouse-wheel-scroll-amount '(3 ((shift) . nil)))
 
+;; Touchpad gestures to move back and forth
+(defun debounce (time fn)
+  (let ((ready t))
+    (lambda ()
+      (interactive)
+      (when ready
+        (funcall fn)
+        (setq ready nil)
+        (run-at-time time nil (lambda () (setq ready t)))))))
+
+(global-set-key (kbd "<triple-wheel-right>") (debounce "0.25 sec" #'previous-buffer))
+(global-set-key (kbd "<triple-wheel-left>") (debounce "0.25 sec" #'next-buffer))
+
+(global-set-key (kbd "M-<triple-wheel-left>") (debounce "0.25 sec" #'tab-previous))
+(global-set-key (kbd "M-<triple-wheel-right>") (debounce "0.25 sec" #'tab-next))
+
+
 (pixel-scroll-precision-mode 1)
 (setq pixel-scroll-precision-interpolate-page t)
 (setq pixel-scroll-precision-use-momentum t)
@@ -38,6 +55,10 @@
 (setq switch-to-buffer-obey-display-actions t)
 (setq switch-to-buffer-in-dedicated-window 'pop)
 
+;; Do not open the Messages buffer when I accidentally click on the minibuffer
+(define-key minibuffer-inactive-mode-map [mouse-1] #'ignore)
+
+
 ;; Winner
 (winner-mode)
 
@@ -53,9 +74,43 @@
 (global-set-key (kbd "C-h k") #'helpful-key)
 (global-set-key (kbd "C-h x") #'helpful-command)
 
-(require-package 'golden-ratio)
-
 (after 'evil
   (evil-set-initial-state 'helpful-mode 'motion))
+
+;; Olivetti for focused writing
+(require-package 'olivetti)
+
+;; Pulsar
+(require-package 'pulsar)
+(require 'pulsar)
+(pulsar-global-mode)
+
+(add-hook 'consult-after-jump-hook #'pulsar-recenter-top)
+(add-hook 'consult-after-jump-hook #'pulsar-reveal-entry)
+(add-hook 'imenu-after-jump-hook #'pulsar-recenter-top)
+(add-hook 'imenu-after-jump-hook #'pulsar-reveal-entry)
+
+;; NANO modeline
+;; (require-package 'nano-modeline)
+;; (require 'nano-modeline)
+;; (setopt nano-modeline-position 'nano-modeline-footer)
+
+;; (nano-modeline-text-mode t)
+;; (add-hook 'prog-mode-hook #'nano-modeline-prog-mode)
+
+;; Activities
+(require-package 'activities)
+(activities-mode)
+(activities-tabs-mode)
+
+(setopt edebug-inhibit-emacs-lisp-mode-bindings t)
+(global-set-key (kbd "C-x C-a C-n") #'activities-new)
+(global-set-key (kbd "C-x C-a C-a") #'activities-resume)
+(global-set-key (kbd "C-x C-a C-s") #'activities-suspend)
+(global-set-key (kbd "C-x C-a C-k") #'activities-kill)
+(global-set-key (kbd "C-x C-a RET") #'activities-switch)
+(global-set-key (kbd "C-x C-a g") #'activities-revert)
+(global-set-key (kbd "C-x C-a l") #'activities-list)
+
 
 (provide 'sph-src-ui)

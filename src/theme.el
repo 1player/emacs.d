@@ -73,6 +73,8 @@
    #'signal-handler))
 
 ;; Theme packages
+(require-package 'ef-themes)
+
 (require-package 'modus-themes)
 (require 'modus-themes)
 (setopt modus-themes-italic-constructs t

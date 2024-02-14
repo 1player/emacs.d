@@ -8,7 +8,8 @@
   (setopt evil-undo-system 'undo-redo)
   (setopt evil-want-C-w-delete nil
 	  evil-want-C-d-scroll nil
-	  evil-want-fine-undo t)
+	  evil-want-fine-undo t
+      evil-want-keybinding nil)
 							
   ;; Load evil
   (require-package 'evil)

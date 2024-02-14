@@ -3,10 +3,12 @@ custom.el
 auto-save-list/
 autosaves/
 backups/
+bookmarks
 elisp/
 eln-cache/
 elpa/
 history
+persist/
 projects
 recentf
 transient/

@@ -12,6 +12,11 @@
   (interactive)
   (find-file user-init-file))
 
+(defun sph-toggle-buffer ()
+  "Flips to the last-visited buffer in this window."
+  (interactive)
+  (switch-to-buffer (other-buffer (current-buffer))))
+
 (global-set-key (kbd "C-c i") #'sph-find-user-init-file)
 
 (global-set-key (kbd "<escape>") #'abort-recursive-edit)
@@ -32,11 +37,12 @@
 (global-set-key (kbd "C-M-s") 'isearch-forward)
 (global-set-key (kbd "C-M-r") 'isearch-backward)
 
-(global-set-key (kbd "C-0") #'delete-window)
-(global-set-key (kbd "C-1") #'delete-other-windows)
-(global-set-key (kbd "C-2") #'split-window-below)
-(global-set-key (kbd "C-3") #'split-window-right)
+;; (global-set-key (kbd "C-M-0") #'delete-window)
+;; (global-set-key (kbd "C-M-1") #'delete-other-windows)
+;; (global-set-key (kbd "C-M-2") #'split-window-below)
+;; (global-set-key (kbd "C-M-3") #'split-window-right)
 (global-set-key (kbd "C-o") #'other-window)
+(global-set-key (kbd "C-`") #'sph-toggle-buffer)
 (global-set-key (kbd "C-<tab>") #'consult-buffer)
 
 (global-set-key (kbd "C-x k") #'kill-this-buffer)
@@ -54,6 +60,21 @@
 ;; Up and down history in interactive modes
 (define-key comint-mode-map (kbd "<up>") #'comint-previous-input)
 (define-key comint-mode-map (kbd "<down>") #'comint-next-input)
+
+;; Switching between tabs
+(defun switch-to-tab (number)
+  (lambda ()
+    (interactive)
+    (tab-select number)))
+
+(global-set-key (kbd "C-0") #'tab-close)
+(global-set-key (kbd "C-1") (switch-to-tab 1))
+(global-set-key (kbd "C-2") (switch-to-tab 2))
+(global-set-key (kbd "C-3") (switch-to-tab 3))
+(global-set-key (kbd "C-4") (switch-to-tab 4))
+(global-set-key (kbd "C-5") (switch-to-tab 5))
+(global-set-key (kbd "C-9") #'tab-new)
+
 
 (when (eq sph-keyboard-layout 'moonlander)
   (global-set-key (kbd "C-M-S-SPC") #'consult-buffer)
