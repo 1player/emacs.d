@@ -1,5 +1,8 @@
 ;; -*- lexical-binding: t -*-
 
+;; Web mode (required for some php template files)
+(require-package 'web-mode)
+
 ;; HTML editing mode
 
 (require 'sgml-mode)

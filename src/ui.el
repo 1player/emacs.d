@@ -55,9 +55,11 @@
 (setq switch-to-buffer-obey-display-actions t)
 (setq switch-to-buffer-in-dedicated-window 'pop)
 
+;; Tabs
+(setopt tab-bar-show 1)
+
 ;; Do not open the Messages buffer when I accidentally click on the minibuffer
 (define-key minibuffer-inactive-mode-map [mouse-1] #'ignore)
-
 
 ;; Winner
 (winner-mode)
@@ -97,20 +99,6 @@
 
 ;; (nano-modeline-text-mode t)
 ;; (add-hook 'prog-mode-hook #'nano-modeline-prog-mode)
-
-;; Activities
-(require-package 'activities)
-(activities-mode)
-(activities-tabs-mode)
-
-(setopt edebug-inhibit-emacs-lisp-mode-bindings t)
-(global-set-key (kbd "C-x C-a C-n") #'activities-new)
-(global-set-key (kbd "C-x C-a C-a") #'activities-resume)
-(global-set-key (kbd "C-x C-a C-s") #'activities-suspend)
-(global-set-key (kbd "C-x C-a C-k") #'activities-kill)
-(global-set-key (kbd "C-x C-a RET") #'activities-switch)
-(global-set-key (kbd "C-x C-a g") #'activities-revert)
-(global-set-key (kbd "C-x C-a l") #'activities-list)
 
 
 (provide 'sph-src-ui)
