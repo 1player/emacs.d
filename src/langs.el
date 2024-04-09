@@ -3,6 +3,7 @@
 (require-package 'forth-mode)
 (require-package 'just-mode)
 (require-package 'lua-mode)
+(require-package 'markdown-mode)
 (require-package 'yaml-mode)
 (require-package 'rust-mode)
 

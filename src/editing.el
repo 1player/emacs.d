@@ -20,7 +20,7 @@
 (global-set-key (kbd "C-a") #'crux-move-beginning-of-line)
 (global-set-key (kbd "<home>") #'crux-move-beginning-of-line)
 (global-set-key (kbd "C-x K") #'crux-kill-other-buffers)
-(global-set-key (kbd "C-c w s") #'crux-swap-windows)
+(global-set-key (kbd "C-c w s") #'crux-transpose-windows)
 (global-set-key (kbd "C-c r") #'crux-rename-file-and-buffer)
 (global-set-key (kbd "M-<down>") #'crux-smart-open-line)
 (global-set-key (kbd "M-<up>") #'crux-smart-open-line-above)

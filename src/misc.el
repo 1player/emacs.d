@@ -24,6 +24,7 @@
       confirm-kill-emacs 'y-or-n-p
       inhibit-startup-message t
       initial-scratch-message nil
+      initial-major-mode 'fundamental-mode
       vc-follow-symlinks t
       show-paren-delay 0.0)
 

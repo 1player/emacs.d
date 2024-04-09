@@ -1,5 +1,14 @@
 ;;; -*- lexical-binding: t -*-
 
+;; Window rules
+(add-to-list 'display-buffer-alist
+             ;; Force opening xref links in other window
+             `(,(rx (| "*xref*"
+                       "*grep*"
+                       "*Occur*"))
+               (display-buffer-reuse-window display-buffer-use-least-recent-window)
+               (dedicated . t)))
+
 ;; Mouse
 (setq
  ;; Disable mouse wheel acceleration
@@ -20,22 +29,22 @@
 (global-set-key (kbd "<triple-wheel-right>") (debounce "0.25 sec" #'previous-buffer))
 (global-set-key (kbd "<triple-wheel-left>") (debounce "0.25 sec" #'next-buffer))
 
-(global-set-key (kbd "M-<triple-wheel-left>") (debounce "0.25 sec" #'tab-previous))
-(global-set-key (kbd "M-<triple-wheel-right>") (debounce "0.25 sec" #'tab-next))
+(global-set-key (kbd "C-<triple-wheel-left>") (debounce "0.25 sec" #'tab-previous))
+(global-set-key (kbd "C-<triple-wheel-right>") (debounce "0.25 sec" #'tab-next))
 
+(require 'pixel-scroll)
 
 (pixel-scroll-precision-mode 1)
 (setq pixel-scroll-precision-interpolate-page t)
 (setq pixel-scroll-precision-use-momentum t)
 (setq pixel-scroll-precision-momentum-seconds 0.5)
-(setq pixel-scroll-precision-momentum-min-velocity 25.0)
+(setq pixel-scroll-precision-momentum-min-velocity 100.0)
 (setq pixel-scroll-precision-initial-velocity-factor 0.005)
 (setq pixel-scroll-precision-large-scroll-height nil)
 
 ;; Scroll just enough to show the next line, like
 ;; other editors do.
 (setq scroll-conservatively 101)
-
 (setq scroll-margin 5)
 (setq scroll-preserve-screen-position t)
 

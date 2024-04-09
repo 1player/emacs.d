@@ -30,7 +30,7 @@
 (global-set-key (kbd "M-/") 'hippie-expand)
 (global-set-key (kbd "C-x C-b") 'ibuffer)
 (global-set-key (kbd "M-z") 'zap-up-to-char)
-(global-set-key (kbd "M-p") 'whole-line-or-region-comment-dwim)
+(global-set-key (kbd "C-,") 'whole-line-or-region-comment-dwim)
 
 (global-set-key (kbd "C-s") 'isearch-forward-regexp)
 (global-set-key (kbd "C-r") 'isearch-backward-regexp)
@@ -48,14 +48,18 @@
 (global-set-key (kbd "C-x k") #'kill-this-buffer)
 
 (global-set-key (kbd "C-x C-z") #'sph-suspend-frame)
-(global-set-key (kbd "C-z") #'sph-suspend-frame)
-(global-set-key (kbd "M-u") #'undo-only)
-(global-set-key (kbd "M-r") #'undo-redo)
+
+(global-set-key (kbd "C-z") #'undo-only)
+(global-set-key (kbd "C-S-z") #'undo-redo)
 
 (global-set-key (kbd "C-x C-r") #'revert-buffer-quick)
 
 (global-set-key (kbd "M-g M-a") #'beginning-of-buffer)
 (global-set-key (kbd "M-g M-e") #'end-of-buffer)
+
+(when (eq sph-keyboard-layout 'moonlander)
+  (global-set-key (kbd "C-M-S-s-v") #'consult-buffer)
+  (global-set-key (kbd "C-M-S-s-f") #'project-find-file))
 
 ;; Up and down history in interactive modes
 (define-key comint-mode-map (kbd "<up>") #'comint-previous-input)

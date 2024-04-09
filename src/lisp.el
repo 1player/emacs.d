@@ -9,5 +9,8 @@
   (add-hook 'emacs-lisp-mode-hook (lambda ()
                                     (remove-hook 'flymake-diagnostic-functions 'elisp-flymake-checkdoc t))))
 
+;; Scheme
+(require-package 'geiser-guile)
+
 
 (provide 'sph-src-paredit)

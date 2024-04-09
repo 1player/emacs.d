@@ -1,0 +1,10 @@
+# -*- mode: snippet -*-
+# name: Elixir component function
+# key: defcomp
+# --
+
+def ${1:component}(assigns) do
+  ~H"""
+    $0
+  """
+end
