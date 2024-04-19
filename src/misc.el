@@ -26,7 +26,8 @@
       initial-scratch-message nil
       initial-major-mode 'fundamental-mode
       vc-follow-symlinks t
-      show-paren-delay 0.0)
+      show-paren-delay 0.0
+      confirm-kill-emacs nil)
 
 (setq-default indent-tabs-mode nil
               tab-width 4)
@@ -35,6 +36,17 @@
 (let ((auto-save-dir (file-name-as-directory (expand-file-name "autosaves" user-emacs-directory))))
   (make-directory auto-save-dir t)
   (setq auto-save-file-name-transforms `((".*" ,auto-save-dir t))))
+
+;; Actually, save whenever a buffer or window loses focus
+(use-package super-save
+  :custom
+  ;; Default is '(mouse-leave-buffer-hook focus-out-hook), but the
+  ;; mouse-leave-buffer-hook is also called when clicking anywhere in
+  ;; the _same_ buffer, which is annoying when working on TRAMP, and
+  ;; any click suffers the delay of remote saving
+  (super-save-hook-triggers '(focus-out-hook))
+  :config
+  (super-save-mode 1))
 
 ;; Sensible defaults
 (add-hook 'prog-mode-hook 'subword-mode)

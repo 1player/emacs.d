@@ -32,4 +32,9 @@
 (require-package 'yasnippet)
 (yas-global-mode 1)
 
+;; Set SQL defaults
+(setopt sql-server "localhost"
+        sql-user "postgres")
+
+
 (provide 'sph-src-programming)

@@ -1,5 +1,8 @@
 ;;; -*- lexical-binding: t -*-
 
+(setopt focus-follows-mouse t
+        mouse-autoselect-window t)
+
 ;; Window rules
 (add-to-list 'display-buffer-alist
              ;; Force opening xref links in other window
@@ -8,6 +11,14 @@
                        "*Occur*"))
                (display-buffer-reuse-window display-buffer-use-least-recent-window)
                (dedicated . t)))
+
+;; Zoom mode
+(use-package zoom
+  :custom
+  ; Zoom to half screen X, or golden ratio Y
+  (zoom-size '(0.5 . 0.618))
+  :bind
+  (("C-x +" . 'zoom-mode)))
 
 ;; Mouse
 (setq

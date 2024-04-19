@@ -11,6 +11,9 @@
 (setq warning-suppress-log-types '((comp) (bytecomp)))
 (setq native-comp-async-report-warnings-errors 'silent)
 
+;; Add ~/.local/bin to PATH
+(setenv "PATH" (concat (expand-file-name "~/.local/bin") ":" (getenv "PATH")))
+(add-to-list 'exec-path (expand-file-name "~/.local/bin"))
 
 (let ((file-name-handler-alist nil)
       (src-directory (concat user-emacs-directory "src/"))

@@ -48,10 +48,23 @@ FEATURE may be any one of:
    (t
     `(with-eval-after-load ,feature ,@body))))
 
+;; package.el
+(setopt package-install-upgrade-built-in t)
+
+;; use-package
+(require 'use-package-ensure)
+(setopt use-package-always-ensure t)
+
+;; vc-use-package
+(unless (package-installed-p 'vc-use-package)
+  (package-vc-install "https://github.com/slotThe/vc-use-package"))
+(require 'vc-use-package)
+
+
 ;; GC and other performance tweaks
-(require-package 'gcmh)
-(require 'gcmh)
-(gcmh-mode 1)
+(use-package gcmh
+  :config
+  (gcmh-mode 1))
 
 (setopt read-process-output-max (* 1024 1024))
 

@@ -8,10 +8,8 @@
 (after 'eglot
   (add-to-list
    'eglot-server-programs
-   `((elixir-mode elixir-ts-mode heex-mode heex-ts-mode) . (
-                                                            ;; ,(expand-file-name "~/src/github.com/lexical-lsp/lexical/_build/dev/package/lexical/bin/start_lexical.sh")
-                                                            ;; "nextls"
-                                                            "elixir-ls"))))
+   `((elixir-mode elixir-ts-mode heex-mode heex-ts-mode) . ("next_ls" "--stdio=true"))))
+                                                            ;;"elixir-ls"))))
 
 (defun setup-elixir-mode ()
   (eglot-ensure)

@@ -26,7 +26,7 @@
   (setq sph-current-theme 'dark))
 
 ;; Font
-(set-frame-font "Iosevka Comfy Motion-13" nil t)
+(add-to-list 'default-frame-alist '(font . "Iosevka Comfy Motion-13"))
 (setq-default line-spacing 1)
 
 ;; Dark/light theme switcher
@@ -73,25 +73,25 @@
    #'signal-handler))
 
 ;; Theme packages
-(require-package 'ef-themes)
+(use-package ef-themes)
 
-(require-package 'modus-themes)
-(require 'modus-themes)
-(setopt modus-themes-italic-constructs t
-        modus-themes-bold-constructs nil)
+(use-package modus-themes
+  :config
+  (setopt modus-themes-italic-constructs t
+          modus-themes-bold-constructs nil)
 
-(setopt modus-themes-common-palette-overrides
-        `(;; Remove the border from the modeline
-          (border-mode-line-active unspecified)
-          (border-mode-line-inactive unspecified)
-          ;; Make the mode line more colorful
-          (bg-mode-line-active bg-magenta-subtle)
-          (fg-mode-line-active fg-main)
-          ,@modus-themes-preset-overrides-faint))
+  (setopt modus-themes-common-palette-overrides
+          `(;; Remove the border from the modeline
+            (border-mode-line-active unspecified)
+            (border-mode-line-inactive unspecified)
+            ;; Make the mode line more colorful
+            (bg-mode-line-active bg-magenta-subtle)
+            (fg-mode-line-active fg-main)
+            ,@modus-themes-preset-overrides-faint))
 
-(when (eq sph-theme 'modus)
-  (setq sph-light-theme 'modus-operandi-tinted)
-  (setq sph-dark-theme 'modus-vivendi))
+  (when (eq sph-theme 'modus)
+    (setq sph-light-theme 'modus-operandi-tinted)
+    (setq sph-dark-theme 'modus-vivendi)))
 
 ;;
 (sph-start-theme-switcher)
