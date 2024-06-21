@@ -73,8 +73,6 @@
    #'signal-handler))
 
 ;; Theme packages
-(use-package ef-themes)
-
 (use-package modus-themes
   :config
   (setopt modus-themes-italic-constructs t
@@ -87,6 +85,12 @@
             ;; Make the mode line more colorful
             (bg-mode-line-active bg-magenta-subtle)
             (fg-mode-line-active fg-main)
+            ;;
+            (docstring comment)
+            (type fg-alt)
+            (fnname fg-alt)
+            (variable fg-main)
+            (constant fg-main)
             ,@modus-themes-preset-overrides-faint))
 
   (when (eq sph-theme 'modus)

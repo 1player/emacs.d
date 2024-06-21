@@ -1,7 +1,5 @@
 ;;; -*- lexical-binding: t -*-
 
-(setopt focus-follows-mouse t
-        mouse-autoselect-window t)
 
 ;; Window rules
 (add-to-list 'display-buffer-alist
@@ -21,11 +19,14 @@
   (("C-x +" . 'zoom-mode)))
 
 ;; Mouse
-(setq
+(setopt
  ;; Disable mouse wheel acceleration
  mouse-wheel-progressive-speed nil
  ;; Scroll 3 lines at a time, full screens while holding SHIFT
- mouse-wheel-scroll-amount '(3 ((shift) . nil)))
+ mouse-wheel-scroll-amount '(3 ((shift) . nil))
+
+ focus-follows-mouse t
+ mouse-autoselect-window t)
 
 ;; Touchpad gestures to move back and forth
 (defun debounce (time fn)
@@ -37,11 +38,11 @@
         (setq ready nil)
         (run-at-time time nil (lambda () (setq ready t)))))))
 
-(global-set-key (kbd "<triple-wheel-right>") (debounce "0.25 sec" #'previous-buffer))
-(global-set-key (kbd "<triple-wheel-left>") (debounce "0.25 sec" #'next-buffer))
+;; (global-set-key (kbd "<triple-wheel-right>") (debounce "0.25 sec" #'previous-buffer))
+;; (global-set-key (kbd "<triple-wheel-left>") (debounce "0.25 sec" #'next-buffer))
 
-(global-set-key (kbd "C-<triple-wheel-left>") (debounce "0.25 sec" #'tab-previous))
-(global-set-key (kbd "C-<triple-wheel-right>") (debounce "0.25 sec" #'tab-next))
+(global-set-key (kbd "C-<triple-wheel-left>") (debounce "0.25 sec" #'previous-buffer))
+(global-set-key (kbd "C-<triple-wheel-right>") (debounce "0.25 sec" #'next-buffer))
 
 (require 'pixel-scroll)
 

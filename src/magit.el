@@ -1,6 +1,9 @@
 ;;; -*- lexical-binding: t -*-
 
-(require-package 'magit)
+(use-package magit)
+
+(use-package forge
+  :after magit)
 
 (provide 'sph-src-magit)
 

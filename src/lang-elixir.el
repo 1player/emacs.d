@@ -31,4 +31,8 @@
 	  (defun elixir-ts-mode-setup ()
 	    (treesit-font-lock-recompute-features '() '(elixir-constant heex-attribute))))
 
+;; Add compilation-mode regexes to match mix errors
+(add-to-list 'compilation-error-regexp-alist-alist '(elixir-mix "^[     ]+\\(?:(.*) \\)?\\(.*\\):\\([0-9]+\\):?.*$" 1 2))
+(add-to-list 'compilation-error-regexp-alist 'elixir-mix)
+
 (provide 'sph-src-lang-elixir)

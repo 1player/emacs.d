@@ -11,6 +11,7 @@
 
 ;; Scheme
 (require-package 'geiser-guile)
+(require-package 'geiser-mit)
 
 
 (provide 'sph-src-paredit)

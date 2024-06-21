@@ -36,5 +36,8 @@
 (setopt sql-server "localhost"
         sql-user "postgres")
 
+;; Electric pair
+(setopt electric-pair-skip-whitespace nil
+        electric-pair-inhibit-predicate 'electric-pair-conservative-inhibit)
 
 (provide 'sph-src-programming)

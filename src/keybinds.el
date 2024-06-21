@@ -27,22 +27,19 @@
 (global-set-key (kbd "<mouse-9>") #'switch-to-next-buffer)
 (global-set-key (kbd "<Forward>") #'switch-to-next-buffer)
 
+;; Switch buffers with keyboard
+(global-set-key (kbd "C-,") #'sph-toggle-buffer)
+
 (global-set-key (kbd "M-/") 'hippie-expand)
-(global-set-key (kbd "C-x C-b") 'ibuffer)
 (global-set-key (kbd "M-z") 'zap-up-to-char)
-(global-set-key (kbd "C-,") 'whole-line-or-region-comment-dwim)
+(global-set-key (kbd "M-n") 'whole-line-or-region-comment-dwim)
 
 (global-set-key (kbd "C-s") 'isearch-forward-regexp)
 (global-set-key (kbd "C-r") 'isearch-backward-regexp)
 (global-set-key (kbd "C-M-s") 'isearch-forward)
 (global-set-key (kbd "C-M-r") 'isearch-backward)
 
-;; (global-set-key (kbd "C-M-0") #'delete-window)
-;; (global-set-key (kbd "C-M-1") #'delete-other-windows)
-;; (global-set-key (kbd "C-M-2") #'split-window-below)
-;; (global-set-key (kbd "C-M-3") #'split-window-right)
 (global-set-key (kbd "C-o") #'other-window)
-(global-set-key (kbd "C-`") #'sph-toggle-buffer)
 (global-set-key (kbd "C-<tab>") #'consult-buffer)
 
 (global-set-key (kbd "C-x k") #'kill-this-buffer)
@@ -80,10 +77,15 @@
 (global-set-key (kbd "C-9") #'tab-new)
 
 
+
 (when (eq sph-keyboard-layout 'moonlander)
   (global-set-key (kbd "C-M-S-SPC") #'consult-buffer)
   (global-set-key (kbd "C-M-S-s") #'save-buffer)
-  (global-set-key (kbd "C-M-S-f") #'project-find-file))
+  (global-set-key (kbd "C-M-S-f") #'project-find-file)
+
+  ;; Often hit this while clicking after activating Caps WORD
+  (global-set-key (kbd "S-<mouse-1>") #'mouse-set-point)
+  (global-set-key (kbd "S-<down-mouse-1>") #'mouse-set-point))
 
 (after 'evil
   (evil-define-key 'normal 'global (kbd "<leader>SPC") #'consult-buffer)

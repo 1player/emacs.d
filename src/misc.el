@@ -27,7 +27,8 @@
       initial-major-mode 'fundamental-mode
       vc-follow-symlinks t
       show-paren-delay 0.0
-      confirm-kill-emacs nil)
+      confirm-kill-emacs nil
+      tooltip-delay 0.25)
 
 (setq-default indent-tabs-mode nil
               tab-width 4)
@@ -72,5 +73,15 @@
 
 ;; Try - to try packages
 (require-package 'try)
+
+;; Emacs' local authinfo
+(push (concat user-emacs-directory ".authinfo") auth-sources)
+
+;; Set a sane syntax for re-builder
+(require 're-builder)
+(setq reb-re-syntax 'string)
+
+;; Tree-style undo
+(use-package vundo)
 
 (provide 'sph-src-misc)

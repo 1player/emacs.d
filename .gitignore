@@ -1,5 +1,6 @@
 custom.el
 
+.authinfo
 auto-save-list/
 autosaves/
 backups/
@@ -7,8 +8,11 @@ bookmarks
 elisp/
 eln-cache/
 elpa/
+forge-database.sqlite
 history
+parinfer-rust/
 persist/
+persp-confs/
 projects
 recentf
 tabsession.el

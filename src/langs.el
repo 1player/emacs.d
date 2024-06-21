@@ -5,7 +5,6 @@
 (require-package 'lua-mode)
 (require-package 'markdown-mode)
 (require-package 'yaml-mode)
-(require-package 'rust-mode)
 
 ;; For shell scripts
 (require-package 'flymake-shellcheck)
